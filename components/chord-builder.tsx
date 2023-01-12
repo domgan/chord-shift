@@ -14,7 +14,7 @@ export interface ChordOption {
 // }
 interface SelectChordProps {
     chords: string[]
-    setChords: Dispatch<SetStateAction<string[]>>
+    // setChords: Dispatch<SetStateAction<string[]>>
     setShowChordBuilder: Dispatch<SetStateAction<boolean>>
 }
 
@@ -32,7 +32,7 @@ export default function ChordBuilder(props: SelectChordProps) {
         const tonalityOptions = [{ value: 1, label: '' }, { value: 2, label: 'm' }]
 
         return (
-            <div className=''>
+            <div className={styles.center}>
                 <Select options={noteOptions} onChange={(values) => setNote(values[0])} values={[]} />
                 <Select options={chromaticOptions} onChange={(values) => setChromatic(values[0])} values={[]} />
                 <Select options={tonalityOptions} onChange={(values) => setTonality(values[0])} values={[]} />
@@ -47,11 +47,10 @@ export default function ChordBuilder(props: SelectChordProps) {
     }
 
     return (
-        <div className=''>
+        <div className={styles.main}>
             <SelectChord />
             {note.label}{chromatic.label}{tonality.label}
             <a className={styles.card} onClick={handleSave}>Save</a>
-            {/* <button><Link href={{ pathname: '/chords', query: { chord: note.label + chromatic.label + tonality.label } }}>Save</Link></button> */}
         </div>
     )
 }

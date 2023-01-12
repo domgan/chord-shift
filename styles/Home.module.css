@@ -44,7 +44,14 @@
   grid-template-columns: repeat(4, minmax(25%, auto));
   width: var(--max-width);
   max-width: 100%;
-  background: rgba(var(--card-rgb), 0);
+}
+
+.grid_chords {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(25%, auto));
+  text-align: center;
+  width: 20%;
+  max-width: 100%;
 }
 
 .card {

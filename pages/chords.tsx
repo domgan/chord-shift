@@ -7,11 +7,14 @@ export default function Chords() {
     const [showChordBuilder, setShowChordBuilder] = useState<boolean>(false)
 
     return (
-        showChordBuilder
-            ? (<ChordBuilder chords={chords} setShowChordBuilder={setShowChordBuilder} />)
-            : (<div className={styles.grid}>
-                {chords.map(chord => { return (<a className={styles.card}>{chord}</a>) })}
-                <a onClick={() => setShowChordBuilder(true)} className={styles.card}>+</a>
-            </div>)
+        <div className={styles.main}>
+            {showChordBuilder
+                ? (<ChordBuilder chords={chords} setShowChordBuilder={setShowChordBuilder} />)
+                : (<div className={styles.grid_chords}>
+                    {chords.map(chord => { return (<a className={styles.card}>{chord}</a>) })}
+                    <a onClick={() => setShowChordBuilder(true)} className={styles.card}>+</a>
+                </div>)
+            }
+        </div>
     )
 }
