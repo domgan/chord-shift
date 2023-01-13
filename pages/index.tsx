@@ -1,7 +1,6 @@
 import Head from 'next/head'
-import Image from 'next/image'
 import { Inter } from '@next/font/google'
-import styles from '../styles/Home.module.css'
+// import '../styles/Home.module.css'
 import Link from 'next/link'
 
 const inter = Inter({ subsets: ['latin'] })
@@ -15,20 +14,11 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className={styles.main}>
-        {/* <div className={styles.description}>
-          <p>
-            Get started by editing&nbsp;
-            <code className={styles.code}>pages/index.tsx</code>
-          </p>
-          <p>
-            Go to chords organizer <Link href='/chords'>here</Link>
-          </p>
-        </div> */}
-        <div className={styles.grid}>
+      <main className='bg-slate-900'>
+        <div className='px-6 pt-4 pb-2'>
           <Link
             href='/chords'
-            className={styles.card}
+            className='inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2 bg-sky-500/75'
           // target="_blank"
           // rel="noopener noreferrer"
           >
@@ -41,7 +31,7 @@ export default function Home() {
           </Link>
           <a
             href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
+            className='inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2 bg-sky-500/75'
             target="_blank"
             rel="noopener noreferrer"
           >
