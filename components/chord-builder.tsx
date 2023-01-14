@@ -17,7 +17,7 @@ type ChooseChordProps = {
 export default function ChordBuilder(props: ChooseChordProps) {
   const [note, setNote] = useState<string>('C')
   const [chromatic, setChromatic] = useState<string>('')
-  const [tonality, setTonality] = useState<string>('')
+  const [tonality, setTonality] = useState<string>('major')
 
   const CharSelector = (props: CharSelectorProps) => {
     return (
@@ -29,8 +29,8 @@ export default function ChordBuilder(props: ChooseChordProps) {
 
   const ChooseChord = () => {
     const notes = 'CDEFGAB'.split('')
-    const chromatics = ' #b'.split('')
-    const tonalities = ['', 'm', 'aug', 'dim']  // todo objects {name: string, label: string}
+    const chromatics = ' ♯♭'.split('')
+    const tonalities = ['major', 'minor', 'augmented', 'diminished']  // todo objects {name: string, label: string}
 
     return (
       <div className='flex items-center justify-between'>
@@ -42,44 +42,55 @@ export default function ChordBuilder(props: ChooseChordProps) {
   }
 
   const generateNotes = (): string[] => {  // (rootNote: string, tonality: string, chromatics: string)
-    const notes = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+    const notes = ["C", "C♯", "D", "D♯", "E", "F", "F♯", "G", "G♯", "A", "A♯", "B"];
 
     // normalize
     let rootNote;
-    if (chromatic === 'b') {
-      rootNote = notes[notes.indexOf(note) - 1]
+    if (chromatic === '♭') {
+      rootNote = notes[(notes.indexOf(note) + 11) % 12]
     } else {
       rootNote = note + chromatic
     }
-    let chord = [rootNote];
+
+    let chordNotes = [rootNote];
     let rootIndex = notes.indexOf(rootNote);
 
     switch (tonality) {
-      case "":
-        chord.push(notes[(rootIndex + 4) % 12]);
-        chord.push(notes[(rootIndex + 7) % 12]);
-        break;
-      case "m":
-        chord.push(notes[(rootIndex + 3) % 12]);
-        chord.push(notes[(rootIndex + 7) % 12]);
-        break;
-      case "dim":
-        chord.push(notes[(rootIndex + 3) % 12]);
-        chord.push(notes[(rootIndex + 6) % 12]);
-        break;
-      case "aug":
-        chord.push(notes[(rootIndex + 4) % 12]);
-        chord.push(notes[(rootIndex + 8) % 12]);
-        break;
+      case "major":
+        chordNotes.push(notes[(rootIndex + 4) % 12])
+        chordNotes.push(notes[(rootIndex + 7) % 12])
+        break
+      case "minor":
+        chordNotes.push(notes[(rootIndex + 3) % 12])
+        chordNotes.push(notes[(rootIndex + 7) % 12])
+        break
+      case "augmented":
+        chordNotes.push(notes[(rootIndex + 3) % 12])
+        chordNotes.push(notes[(rootIndex + 6) % 12])
+        break
+      case "diminished":
+        chordNotes.push(notes[(rootIndex + 4) % 12])
+        chordNotes.push(notes[(rootIndex + 8) % 12])
+        break
       default:
-        throw new Error("Invalid tonality");
+        throw new Error("Invalid tonality")
+    }
+    // denormalize
+    if (chromatic === '♭' || (tonality === 'minor' && rootNote[1] !== '♯')) {
+      chordNotes = chordNotes.map(n => n.includes('♯') ? notes[(notes.indexOf(n) + 1)] + '♭' : n)
     }
 
-    return chord;
+    return chordNotes
   }
 
   const handleSave = () => {
-    const label = note + chromatic + tonality
+    const tonalitiesMap: { [key: string]: string } = {
+      major: '',
+      minor: 'm',
+      augmented: 'aug',  // todo symbols
+      diminished: 'dim'
+    }
+    const label = note + chromatic + tonalitiesMap[tonality]
     label && props.chords.push({ id: props.chords.length, label: label, notes: generateNotes() })
     // props.setChords(props.chords)
     props.setShowChordBuilder(false)

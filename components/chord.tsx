@@ -23,7 +23,7 @@ export default function ChordCard(props: ChordCardProps) {
 
   const RemoveButton = () => {
     return (
-      <button className='absolute top-0.5 right-3.5 rounded-full bg-white hover:bg-red-500 h-8 w-8 focus:outline-none grid place-items-center'
+      <button className='absolute top-0 right-0 rounded-full bg-white hover:bg-red-500 h-8 w-8 focus:outline-none grid place-items-center'
         onClick={handleRemove}><Image alt='close' width={24} height={24} src='/close.svg' />
       </button>
     )
@@ -31,7 +31,7 @@ export default function ChordCard(props: ChordCardProps) {
 
   return (
     <div className='flex flex-wrap justify-center relative'>
-      <button className='bg-gradient-to-r from-purple-600 to-indigo-500 p-4 m-4 h-48 w-48 rounded-sm text-center hover:to-purple-700'
+      <button className='bg-gradient-to-r from-purple-600 to-indigo-500 h-24 w-36 rounded-sm text-center hover:to-purple-700'
         onClick={() => setShowRemove(!showRemove)}>
         <div className='text-xl font-bold'>{props.chord.label}</div>
         <div className="text-lg">{props.chord.notes.join('-')}</div>
