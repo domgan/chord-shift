@@ -22,13 +22,17 @@ export default function ChordCard(props: ChordCardProps) {
 
   const RemoveButton = () => {
     return (
-      <button className='hover:bg-red-700 bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2 bg-sky-500/75 top-0 right-0 h-6 w-6' onClick={handleRemove}>X</button>
+      <button className='absolute top-0 right-2 text-center font-medium text-gray-500 rounded-full bg-white hover:bg-red-500 h-8 w-8 focus:outline-none' onClick={handleRemove} >X</button>
     )
   }
 
   return (
-    <>
-      <a className='inline-block hover:bg-sky-700 bg-gray-200 px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2 bg-sky-500/75 h-16 w-16 text-center' onClick={() => setShowRemove(!showRemove)}>{props.chord.label} {showRemove && <RemoveButton />} </a>
-    </>
+    <div className='flex flex-wrap justify-center relative'>
+      <button className='bg-gradient-to-r from-purple-600 to-indigo-500 p-4 m-4 h-48 w-48 rounded-sm text-center hover:to-purple-700' onClick={() => setShowRemove(!showRemove)}>
+        <div className='text-xl font-bold'>{props.chord.label}</div>
+        <div className="text-lg">Chord Notes</div>
+        {showRemove && <RemoveButton />}
+      </button>
+    </div>
   )
 }

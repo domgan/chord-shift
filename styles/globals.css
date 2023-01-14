@@ -15,5 +15,46 @@
   --font-size-md: 1rem;
   --font-size-lg: 2rem;
 
-  background-color: rgb(30 41 59);
+  /* background-color: rgb(30 41 59); */
+}
+
+@layer components {
+  .btn {
+    @apply inline-block bg-gray-200 px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2 hover:bg-sky-600/50 bg-sky-500/75;
+  }
+  .main {
+    @apply bg-gradient-to-r from-pink-500 to-purple-500 fixed top-0 left-0 w-screen h-screen bg-center bg-cover;
+  }
+}
+
+/* Define a container for the chords */
+.chord-workspace {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* Define the style for each chord */
+.chord {
+  background-color: #e6e6e6; /* A light gray color */
+  border: 1px solid #c5c5c5; /* A medium gray color */
+  border-radius: 10px;
+  padding: 10px;
+  margin: 10px;
+  width: 150px;
+  height: 150px;
+  text-align: center;
+}
+
+/* Define the style for the chord name */
+.chord-name {
+  font-size: 24px;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+/* Define the style for the chord notes */
+.chord-notes {
+  font-size: 18px;
+  margin-top: 5px;
 }

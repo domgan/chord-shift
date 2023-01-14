@@ -14,7 +14,7 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className='bg-slate-900'>
+      <main className='main'>
         <div className='px-6 pt-4 pb-2'>
           <Link
             href='/chords'

@@ -8,14 +8,16 @@ export default function Chords() {
   const [showChordBuilder, setShowChordBuilder] = useState<boolean>(false)
 
   return (
-    <div className='grid'>
-      {showChordBuilder
-        ? (<ChordBuilder chords={chords} setShowChordBuilder={setShowChordBuilder} />)
-        : (<div className={styles.grid_chords}>
+    <main className='main'>
+      <div className="max-w-screen-lg mx-auto p-4">
+        {showChordBuilder && (<ChordBuilder chords={chords} setShowChordBuilder={setShowChordBuilder} />)}
+        <div className='grid grid-cols-4'>
           {chords.map(chord => <ChordCard chord={chord} chords={chords} setChords={setChords} />)}
-          <a onClick={() => setShowChordBuilder(true)} className='inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2 bg-sky-500/75'>+</a>
-        </div>)
-      }
-    </div>
+          <div className="relative rounded-full flex items-center">
+            <button onClick={() => setShowChordBuilder(true)} className='bg-green-500 text-white rounded-full h-12 w-12 text-center text-xl hover:bg-green-600 focus:outline-none'>+</button>
+          </div>
+        </div>
+      </div>
+    </main>
   )
 }

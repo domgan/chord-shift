@@ -28,8 +28,8 @@ export default function ChordBuilder(props: ChooseChordProps) {
 
   const CharSelector = (props: CharSelectorProps) => {
     return (
-      <select title={props.title} onChange={e => props.setChar(e.target.value)} value={props.char} className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'>
-        {props.blocks.map(block => <option>{block}</option>)}
+      <select title={props.title} onChange={e => props.setChar(e.target.value)} value={props.char} className='text-lg font-medium py-2 px-3 rounded-lg bg-gray-200 focus:outline-none'>
+        {props.blocks.map(block => <option className='py-1 px-2 hover:bg-gray-200'>{block}</option>)}
       </select>
     )
   }
@@ -56,13 +56,23 @@ export default function ChordBuilder(props: ChooseChordProps) {
   }
 
   return (
-    <div className=''>
-      <ChooseChord />
-      {/* <p>{note}{chromatic}{tonality}</p> */}
-      <div className={styles.grid}>
-        <button className='inline-block hover:bg-sky-700 bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2 bg-sky-500/75' onClick={handleSave}>Save</button>
-        <button className='inline-block hover:bg-sky-700 bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2 bg-sky-500/75' onClick={() => props.setShowChordBuilder(false)}>Cancel</button>
+    <>
+      <div className="absolute rounded-lg p-4 m-auto max-w-lg bg-white z-20">
+        <div className="flex items-start justify-between p-4 border-b rounded-t dark:border-gray-600">
+          <h3 className="text-lg font-medium">
+            Chord Builder
+          </h3>
+        </div>
+        <div>
+          <ChooseChord />
+        </div>
+        {/* <p>{note}{chromatic}{tonality}</p> */}
+        <div className="flex items-center p-6 space-x-2 border-t border-gray-200 rounded-b dark:border-gray-600">
+          <button className='btn rounded-full' onClick={handleSave}>Save</button>
+          <button className='btn rounded-full' onClick={() => props.setShowChordBuilder(false)}>Cancel</button>
+        </div>
       </div>
-    </div>
+      <div className="fixed top-0 left-0 w-screen h-screen bg-black bg-opacity-25 z-10"></div>
+    </>
   )
 }
