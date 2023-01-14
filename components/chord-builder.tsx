@@ -1,12 +1,5 @@
 import { Dispatch, SetStateAction, useState } from 'react'
-import styles from '../styles/Home.module.css'
-import chordStyles from '../styles/chords.module.css'
 import { Chord } from "./chord"
-
-export type ChordPart = {
-  value: number
-  label: string
-}
 
 type CharSelectorProps = {
   title: string
@@ -48,9 +41,13 @@ export default function ChordBuilder(props: ChooseChordProps) {
     )
   }
 
+  const generateNotes = (): string[] => {
+    return ['N', 'O', 'T', 'E', 'S']
+  }
+
   const handleSave = () => {
     const label = note + chromatic + tonality
-    label && props.chords.push({ id: props.chords.length, label: note + chromatic + tonality })
+    label && props.chords.push({ id: props.chords.length, label: note + chromatic + tonality, notes: generateNotes() })
     // props.setChords(props.chords)
     props.setShowChordBuilder(false)
   }

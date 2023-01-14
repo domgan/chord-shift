@@ -1,7 +1,7 @@
 import { useState } from "react"
 import ChordBuilder from "../components/chord-builder"
 import ChordCard, { Chord } from "../components/chord"
-import styles from '../styles/Home.module.css'
+import Link from "next/link"
 
 export default function Chords() {
   const [chords, setChords] = useState<Chord[]>([])
@@ -9,6 +9,7 @@ export default function Chords() {
 
   return (
     <main className='main'>
+      <Link className="absolute left-0 top-0 bg-blue-500 font-semibold" href='/'>Home</Link>
       <div className="max-w-screen-lg mx-auto p-4">
         {showChordBuilder && (<ChordBuilder chords={chords} setShowChordBuilder={setShowChordBuilder} />)}
         <div className='grid grid-cols-4'>
