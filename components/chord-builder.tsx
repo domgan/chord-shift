@@ -1,5 +1,6 @@
 import { Dispatch, SetStateAction, useState } from 'react'
 import { Chord } from "./chord"
+import { tonalitiesMap } from '../features/generate-chord-info'
 
 type CharSelectorProps = {
   title: string
@@ -12,17 +13,6 @@ type ChooseChordProps = {
   chords: Chord[]
   // setChords: Dispatch<SetStateAction<string[]>>
   setShowChordBuilder: Dispatch<SetStateAction<boolean>>
-}
-
-const tonalitiesMap: { [key: string]: string } = {
-  major: '',
-  minor: 'm',
-  augmented: 'aug',  // +
-  diminished: 'dim',
-  'major seventh': 'M7',  // △
-  'minor seventh': 'm7',
-  'dominant seventh': '7',
-  'diminished seventh': 'dim7',  // °
 }
 
 export default function ChordBuilder(props: ChooseChordProps) {
@@ -52,71 +42,8 @@ export default function ChordBuilder(props: ChooseChordProps) {
     )
   }
 
-  const generateNotes = (): string[] => {  // (rootNote: string, tonality: string, chromatics: string)
-    const notes = ["C", "C♯", "D", "D♯", "E", "F", "F♯", "G", "G♯", "A", "A♯", "B"];
-
-    // normalize
-    let rootNote;
-    if (chromatic === '♭') {
-      rootNote = notes[(notes.indexOf(note) + 11) % 12]
-    } else {
-      rootNote = note + chromatic
-    }
-
-    let chordNotes = [rootNote];
-    let rootIndex = notes.indexOf(rootNote);
-
-    switch (tonality) {
-      case "major":
-        chordNotes.push(notes[(rootIndex + 4) % 12])
-        chordNotes.push(notes[(rootIndex + 7) % 12])
-        break
-      case "minor":
-        chordNotes.push(notes[(rootIndex + 3) % 12])
-        chordNotes.push(notes[(rootIndex + 7) % 12])
-        break
-      case "augmented":
-        chordNotes.push(notes[(rootIndex + 3) % 12])
-        chordNotes.push(notes[(rootIndex + 6) % 12])
-        break
-      case "diminished":
-        chordNotes.push(notes[(rootIndex + 4) % 12])
-        chordNotes.push(notes[(rootIndex + 8) % 12])
-        break
-      case "major seventh":
-        chordNotes.push(notes[(rootIndex + 4) % 12]);
-        chordNotes.push(notes[(rootIndex + 7) % 12]);
-        chordNotes.push(notes[(rootIndex + 11) % 12]);
-        break;
-      case "minor seventh":
-        chordNotes.push(notes[(rootIndex + 3) % 12]);
-        chordNotes.push(notes[(rootIndex + 7) % 12]);
-        chordNotes.push(notes[(rootIndex + 10) % 12]);
-        break;
-      case "dominant seventh":
-        chordNotes.push(notes[(rootIndex + 4) % 12]);
-        chordNotes.push(notes[(rootIndex + 7) % 12]);
-        chordNotes.push(notes[(rootIndex + 10) % 12]);
-        break;
-      case "diminished seventh":
-        chordNotes.push(notes[(rootIndex + 3) % 12]);
-        chordNotes.push(notes[(rootIndex + 6) % 12]);
-        chordNotes.push(notes[(rootIndex + 9) % 12]);
-        break;
-      default:
-        throw new Error("Invalid tonality")
-    }
-    // denormalize
-    if (chromatic === '♭' || (tonality.includes('minor') && rootNote[1] !== '♯')) {
-      chordNotes = chordNotes.map(n => n.includes('♯') ? notes[(notes.indexOf(n) + 1)] + '♭' : n)
-    }
-
-    return chordNotes
-  }
-
   const handleSave = () => {
-    const label = note + chromatic + tonalitiesMap[tonality]
-    label && props.chords.push({ id: props.chords.length, label: label, notes: generateNotes() })
+    props.chords.push({ id: props.chords.length, note, chromatic, tonality })
     // props.setChords(props.chords)
     props.setShowChordBuilder(false)
   }

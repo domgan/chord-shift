@@ -23,11 +23,11 @@ export default function Home() {
               Chords <span>-&gt;</span>
             </h2>
             <p className={inter.className}>
-              Find in-depth information about Next.js features and&nbsp;API.
+              Start to build your chord progressions!
             </p>
           </Link>
           <a
-            href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
+            href="https://jazz-library.com/articles/chord-symbols/"
             className='inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2 bg-sky-500/75'
             target="_blank"
             rel="noopener noreferrer"
@@ -36,7 +36,7 @@ export default function Home() {
               Learn <span>-&gt;</span>
             </h2>
             <p className={inter.className}>
-              Learn about Next.js in an interactive course with&nbsp;quizzes!
+              Learn about chord symbols.
             </p>
           </a>
         </div>
