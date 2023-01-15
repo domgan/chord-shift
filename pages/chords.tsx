@@ -3,6 +3,7 @@ import ChordBuilder from "../components/chord-builder"
 import ChordCard, { Chord } from "../components/chord-card"
 import Link from "next/link"
 import Image from 'next/image'
+import generateUUID from "../features/generate-uuid"
 
 type WorkspaceElement = {
   id: number
@@ -21,8 +22,8 @@ export default function Chords() {
     const [chords, setChords] = useState<Chord[]>(props.chords)
     const [showChordBuilder, setShowChordBuilder] = useState<boolean>(false)
 
-    const handleDelete = (id: number) => {
-      setWorkspace(workspace.filter(ws => ws.id !== id))
+    const handleDelete = () => {
+      setWorkspace(workspace.filter(ws => ws.id !== props.id))
       // workspace.splice(0, workspace.length, ...workspace.filter(ws => ws.id !== id))
     }
 
@@ -38,7 +39,7 @@ export default function Chords() {
               <Image src='/plus.svg' alt='plus' width={40} height={40} />
             </button>
           </div>
-          <button onClick={() => handleDelete(props.id)} className='absolute top-0 right-0 rounded-full bg-white hover:bg-red-500 h-10 w-10 focus:outline-none grid place-items-center'>
+          <button onClick={handleDelete} className='absolute top-0 right-0 rounded-full bg-white hover:bg-red-500 h-10 w-10 focus:outline-none grid place-items-center'>
             <Image alt='close' width={24} height={24} src='/close.svg' />
           </button>
         </div>
@@ -61,15 +62,29 @@ export default function Chords() {
     setWorkspace([])
   }
 
+  // TODO
+  const handleSave = () => {
+    setToSave({ uniqueId: generateUUID(), workspace })
+  }
+  type toSaveType = {
+    uniqueId: string
+    workspace: WorkspaceElement[]
+  }
+  const [toSave, setToSave] = useState<toSaveType>()
+  ///////
+
   return (
     <main className='main'>
-      <Link className="absolute bg-blue-500 hover:bg-blue-700 text-white font-bold m-0.5 py-1 px-2 border border-blue-700 rounded" href='/'>Home</Link>
-      <button className="absolute bg-blue-500 hover:bg-blue-700 text-white font-bold m-5 py-1 px-2 border border-blue-700 rounded" onClick={handleClear}>Clear</button>
+      <div className="absolute grid">
+        <Link className="bg-blue-500 hover:bg-blue-700 text-white font-bold m-1 py-1 px-2 border border-blue-700 rounded" href='/'>Home</Link>
+        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold m-1 py-1 px-2 border-4 border-red-700 rounded" onClick={handleClear}>Clear</button>
+        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold m-1 py-1 px-2 border-4 border-green-700 rounded" onClick={handleSave}>Save</button>
+      </div>
       <div className="max-w-screen-lg p-10 mx-auto">
         {workspace.map(ws => getWorkspaceElement(ws.id, ws.element))}
         <button className="btn" onClick={handleAddChordBuilder}>New Builder</button>
       </div>
-      <p>{JSON.stringify(workspace)}</p>
+      <p>{toSave && JSON.stringify(toSave)}</p>
     </main>
   )
 }
