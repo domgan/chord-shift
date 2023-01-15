@@ -19,7 +19,8 @@ export default function ChordCard(props: ChordCardProps) {
   const [showRemove, setShowRemove] = useState<boolean>(false)
 
   const handleRemove = () => {
-    props.setChords(props.chords.filter(chord => { return chord.id !== props.chord.id }))
+    props.setChords(props.chords.filter(chord => chord.id !== props.chord.id))
+    props.chords.splice(0, props.chords.length, ...props.chords.filter(chord => chord.id !== props.chord.id))
   }
 
   const RemoveButton = () => {

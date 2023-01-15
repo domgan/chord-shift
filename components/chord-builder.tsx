@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, useState } from 'react'
-import { Chord } from "./chord"
+import { Chord } from "./chord-card"
 import { tonalitiesMap } from '../features/generate-chord-info'
 
 type CharSelectorProps = {
@@ -43,7 +43,7 @@ export default function ChordBuilder(props: ChooseChordProps) {
   }
 
   const handleSave = () => {
-    props.chords.push({ id: props.chords.length, note, chromatic, tonality })
+    props.chords.push({ id: Date.now(), note, chromatic, tonality })
     // props.setChords(props.chords)
     props.setShowChordBuilder(false)
   }

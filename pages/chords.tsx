@@ -1,36 +1,36 @@
-import { Dispatch, ReactElement, SetStateAction, useEffect, useState } from "react"
+import { useState } from "react"
 import ChordBuilder from "../components/chord-builder"
-import ChordCard, { Chord } from "../components/chord"
+import ChordCard, { Chord } from "../components/chord-card"
 import Link from "next/link"
 import Image from 'next/image'
 
 type WorkspaceElement = {
-  id: number,
-  element: Chord[] | ReactElement
+  id: number
+  element: ChordsWorkshopProps
 }
 
-// type ChordsWorkshopProps = {
-//   workspace: WorkspaceElement,
-//   setWorkspace: Dispatch<SetStateAction<WorkspaceElement[]>>
-// }
+type ChordsWorkshopProps = {
+  id: number
+  chords: Chord[]
+}
 
 export default function Chords() {
   const [workspace, setWorkspace] = useState<WorkspaceElement[]>([])
 
-  const ChordsWorkshop = () => {
-    const [chords, setChords] = useState<Chord[]>([])
+  const ChordsWorkshop = (props: ChordsWorkshopProps) => {
+    const [chords, setChords] = useState<Chord[]>(props.chords)
     const [showChordBuilder, setShowChordBuilder] = useState<boolean>(false)
 
-    const handleSave = () => {
-      const w = [...workspace]
-      w.push({ id: workspace.length, element: chords })
-      setWorkspace(w)
+    const handleDelete = (id: number) => {
+      setWorkspace(workspace.filter(ws => ws.id !== id))
+      // workspace.splice(0, workspace.length, ...workspace.filter(ws => ws.id !== id))
     }
 
     return (
-      <div className="max-w-screen-lg p-10 mx-auto">
-        {showChordBuilder && (<ChordBuilder chords={chords} setShowChordBuilder={setShowChordBuilder} />)}
-        <div className='grid grid-flow-row grid-cols-8 gap-4'>
+      <div className="p-5">
+        {showChordBuilder && <ChordBuilder chords={chords} setShowChordBuilder={setShowChordBuilder} />}
+        <div className='relative grid grid-flow-row grid-cols-8 gap-4 p-4 rounded-md shadow-md bg-indigo-800'>
+          <div className="absolute top-0 left-0 text-xs text-red-500 font-bold">This is a watermark</div>
           {chords.map(chord => <ChordCard chord={chord} chords={chords} setChords={setChords} />)}
           <div className="relative rounded-full flex items-center justify-center">
             <button onClick={() => setShowChordBuilder(true)}
@@ -38,17 +38,37 @@ export default function Chords() {
               <Image src='/plus.svg' alt='plus' width={40} height={40} />
             </button>
           </div>
+          <button onClick={() => handleDelete(props.id)} className='absolute top-0 right-0 rounded-full bg-white hover:bg-red-500 h-10 w-10 focus:outline-none grid place-items-center'>
+            <Image alt='close' width={24} height={24} src='/close.svg' />
+          </button>
         </div>
-        <br /><button className="btn" onClick={handleSave}>Save to Workspace</button>
-      </div>
+      </div >
     )
+  }
+
+  const handleAddChordBuilder = () => {
+    const ws = [...workspace]
+    const id = Date.now()
+    ws.push({ id, element: { id, chords: [] } })
+    setWorkspace(ws)
+  }
+
+  const getWorkspaceElement = (id: number, element: ChordsWorkshopProps) => {
+    return <ChordsWorkshop id={id} chords={element.chords} />
+  }
+
+  const handleClear = () => {
+    setWorkspace([])
   }
 
   return (
     <main className='main'>
       <Link className="absolute bg-blue-500 hover:bg-blue-700 text-white font-bold m-0.5 py-1 px-2 border border-blue-700 rounded" href='/'>Home</Link>
-      <ChordsWorkshop />
-      <ChordsWorkshop />
+      <button className="absolute bg-blue-500 hover:bg-blue-700 text-white font-bold m-5 py-1 px-2 border border-blue-700 rounded" onClick={handleClear}>Clear</button>
+      <div className="max-w-screen-lg p-10 mx-auto">
+        {workspace.map(ws => getWorkspaceElement(ws.id, ws.element))}
+        <button className="btn" onClick={handleAddChordBuilder}>New Builder</button>
+      </div>
       <p>{JSON.stringify(workspace)}</p>
     </main>
   )

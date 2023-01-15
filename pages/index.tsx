@@ -13,7 +13,7 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className='main'>
+      <main className='main p-16'>
         <div className='px-6 pt-4 pb-2'>
           <Link
             href='/chords'
