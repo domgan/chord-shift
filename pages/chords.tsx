@@ -1,9 +1,11 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import ChordBuilder from "../components/chord-builder"
 import ChordCard, { Chord } from "../components/chord-card"
 import Link from "next/link"
 import Image from 'next/image'
 import generateUUID from "../features/generate-uuid"
+import { getWorkspace } from "../services/firebase-service"
+
 
 type WorkspaceElement = {
   id: number
@@ -17,6 +19,16 @@ type ChordsWorkshopProps = {
 
 export default function Chords() {
   const [workspace, setWorkspace] = useState<WorkspaceElement[]>([])
+  const [document, setDocument] = useState<any>();
+
+  useEffect(() => {
+    const linkId = 'test-workspace-id'
+    async function fetchData() {
+      const doc = await getWorkspace(linkId)
+      setDocument(`dupa ${typeof doc}`)
+    }
+    fetchData();
+  }, []);
 
   const ChordsWorkshop = (props: ChordsWorkshopProps) => {
     const [chords, setChords] = useState<Chord[]>(props.chords)
@@ -84,7 +96,8 @@ export default function Chords() {
         {workspace.map(ws => getWorkspaceElement(ws.id, ws.element))}
         <button className="btn" onClick={handleAddChordBuilder}>New Builder</button>
       </div>
-      <p>{toSave && JSON.stringify(toSave)}</p>
+      <br /><p>{toSave && JSON.stringify(toSave)}</p>
+      <p>{JSON.stringify(document)}</p>
     </main>
   )
 }
