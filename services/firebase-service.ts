@@ -1,5 +1,6 @@
 import { initializeApp } from 'firebase/app'
-import { getFirestore, doc, getDoc } from 'firebase/firestore/lite'
+import { getFirestore, doc, getDoc, setDoc, Firestore } from 'firebase/firestore/lite'
+import { WorkspaceElement } from '../pages/chords'
 // import { getAnalytics } from "firebase/analytics"
 
 export const firebaseConfig = {
@@ -11,13 +12,23 @@ export const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 }
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig)
-const db = getFirestore(app)
 
-export async function getWorkspace(id: string): Promise<any> {
-  const workoutDocRef = doc(db, 'workspaces', id)
-  const workoutDocSnap = await getDoc(workoutDocRef)
+export default class FirebaseService {
+  db: Firestore
 
-  return workoutDocSnap.data()?.workspace
+  constructor() {
+    this.db = getFirestore(initializeApp(firebaseConfig))
+  }
+
+  async getWorkspace(id: string): Promise<WorkspaceElement[]> {
+    const workoutDocRef = doc(this.db, 'workspaces', id)
+    const workoutDocSnap = await getDoc(workoutDocRef)
+
+    return workoutDocSnap.data()?.workspace
+  }
+
+  async setWorkspace(id: string, workspace: WorkspaceElement[]): Promise<void> {
+    const workoutDocRef = doc(this.db, 'workspaces', id)
+    await setDoc(workoutDocRef, { workspace })
+  }
 }

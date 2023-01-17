@@ -4,10 +4,11 @@ import ChordCard, { Chord } from "../components/chord-card"
 import Link from "next/link"
 import Image from 'next/image'
 import generateUUID from "../features/generate-uuid"
-import { getWorkspace } from "../services/firebase-service"
+import FirebaseService from "../services/firebase-service"
+import { useRouter } from "next/router"
 
 
-type WorkspaceElement = {
+export type WorkspaceElement = {
   id: number
   element: ChordsWorkshopProps
 }
@@ -17,18 +18,27 @@ type ChordsWorkshopProps = {
   chords: Chord[]
 }
 
+const firebaseService = new FirebaseService()  // inside or outside default component?
+
 export default function Chords() {
   const [workspace, setWorkspace] = useState<WorkspaceElement[]>([])
-  const [document, setDocument] = useState<any>();
+  const [document, setDocument] = useState<any>();  // todo
+  const [uniqueId, setUniqueId] = useState<string>();
+
+  const router = useRouter()
+
+  const fetchWorkspace = async (linkId: string) => {
+    const doc = await firebaseService.getWorkspace(linkId)
+    setDocument(`workspace ID: ${doc[0].id}`)
+  }
 
   useEffect(() => {
-    const linkId = 'test-workspace-id'
-    async function fetchData() {
-      const doc = await getWorkspace(linkId)
-      setDocument(`dupa ${typeof doc}`)
+    if (router.isReady) {
+      const uniqueIdFromQuery = router.query.id?.toString()
+      uniqueIdFromQuery && fetchWorkspace(uniqueIdFromQuery)
+      setUniqueId(uniqueIdFromQuery)
     }
-    fetchData();
-  }, []);
+  }, [router.isReady])
 
   const ChordsWorkshop = (props: ChordsWorkshopProps) => {
     const [chords, setChords] = useState<Chord[]>(props.chords)
@@ -74,16 +84,12 @@ export default function Chords() {
     setWorkspace([])
   }
 
-  // TODO
   const handleSave = () => {
-    setToSave({ uniqueId: generateUUID(), workspace })
+    const uniqueIdToSave = uniqueId ?? generateUUID()
+    firebaseService.setWorkspace(uniqueIdToSave, workspace)
+    setUniqueId(uniqueIdToSave)
+    // todo set url to new uniqueId
   }
-  type toSaveType = {
-    uniqueId: string
-    workspace: WorkspaceElement[]
-  }
-  const [toSave, setToSave] = useState<toSaveType>()
-  ///////
 
   return (
     <main className='main'>
@@ -96,8 +102,8 @@ export default function Chords() {
         {workspace.map(ws => getWorkspaceElement(ws.id, ws.element))}
         <button className="btn" onClick={handleAddChordBuilder}>New Builder</button>
       </div>
-      <br /><p>{toSave && JSON.stringify(toSave)}</p>
-      <p>{JSON.stringify(document)}</p>
+      <br /><p>{JSON.stringify(document)}</p>
+      <br /><p>{JSON.stringify(uniqueId)}</p>
     </main>
   )
 }
