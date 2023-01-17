@@ -3,6 +3,8 @@ import { Chord } from "../components/chord-card";
 export const tonalitiesMap: { [key: string]: string } = {
   major: '',
   minor: 'm',
+  sus2: 'sus2',
+  sus4: 'sus4',
   augmented: 'aug',  // +
   diminished: 'dim',
   'major seventh': 'M7',  // △
@@ -43,25 +45,33 @@ export function generateNotes(chord: Chord): string[] {  // (rootNote: string, t
       chordNotes.push(notes[(rootIndex + 8) % 12])
       break
     case "major seventh":
-      chordNotes.push(notes[(rootIndex + 4) % 12]);
-      chordNotes.push(notes[(rootIndex + 7) % 12]);
-      chordNotes.push(notes[(rootIndex + 11) % 12]);
-      break;
+      chordNotes.push(notes[(rootIndex + 4) % 12])
+      chordNotes.push(notes[(rootIndex + 7) % 12])
+      chordNotes.push(notes[(rootIndex + 11) % 12])
+      break
     case "minor seventh":
-      chordNotes.push(notes[(rootIndex + 3) % 12]);
-      chordNotes.push(notes[(rootIndex + 7) % 12]);
-      chordNotes.push(notes[(rootIndex + 10) % 12]);
-      break;
+      chordNotes.push(notes[(rootIndex + 3) % 12])
+      chordNotes.push(notes[(rootIndex + 7) % 12])
+      chordNotes.push(notes[(rootIndex + 10) % 12])
+      break
     case "dominant seventh":
-      chordNotes.push(notes[(rootIndex + 4) % 12]);
-      chordNotes.push(notes[(rootIndex + 7) % 12]);
-      chordNotes.push(notes[(rootIndex + 10) % 12]);
-      break;
+      chordNotes.push(notes[(rootIndex + 4) % 12])
+      chordNotes.push(notes[(rootIndex + 7) % 12])
+      chordNotes.push(notes[(rootIndex + 10) % 12])
+      break
     case "diminished seventh":
-      chordNotes.push(notes[(rootIndex + 3) % 12]);
-      chordNotes.push(notes[(rootIndex + 6) % 12]);
-      chordNotes.push(notes[(rootIndex + 9) % 12]);
-      break;
+      chordNotes.push(notes[(rootIndex + 3) % 12])
+      chordNotes.push(notes[(rootIndex + 6) % 12])
+      chordNotes.push(notes[(rootIndex + 9) % 12])
+      break
+    case "sus2":
+      chordNotes.push(notes[(rootIndex + 2) % 12])
+      chordNotes.push(notes[(rootIndex + 7) % 12])
+      break
+    case "sus4":
+      chordNotes.push(notes[(rootIndex + 5) % 12])
+      chordNotes.push(notes[(rootIndex + 7) % 12])
+      break
     default:
       throw new Error("Invalid tonality")
   }
