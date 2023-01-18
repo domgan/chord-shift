@@ -23,7 +23,7 @@ export default function ChordBuilder(props: ChooseChordProps) {
   const CharSelector = (props: CharSelectorProps) => {
     return (
       <select title={props.title} onChange={e => props.setChar(e.target.value)} value={props.char} className='hover:shadow-lg text-lg font-medium mx-0.5 py-2 px-3 rounded-lg bg-gray-200 focus:outline-none'>
-        {props.blocks.map(block => <option className='py-1 px-2 hover:bg-gray-200'>{block}</option>)}
+        {props.blocks.map((block, idx) => <option key={idx} className='py-1 px-2 hover:bg-gray-200'>{block}</option>)}
       </select>
     )
   }
