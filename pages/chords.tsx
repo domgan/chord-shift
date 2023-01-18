@@ -7,6 +7,8 @@ import generateUUID from "../features/generate-uuid"
 import FirebaseService from "../services/firebase-service"
 import { useRouter } from "next/router"
 import Spinner from "../components/spinner"
+import Notification, { triggerNotification } from "../components/notification"
+
 
 
 export type WorkspaceElement = {
@@ -84,7 +86,7 @@ export default function Chords() {
 
   const handleNew = () => {
     setWorkspace([])
-    router.push({ pathname: `/chords`, },
+    router.push({ pathname: `/chords` },
       undefined,
       { shallow: true }
     )
@@ -96,6 +98,10 @@ export default function Chords() {
   }
 
   const handleSave = () => {
+    if (workspace.length === 0) {
+      triggerNotification('You cannot save empty workspace')
+      return  // empty timed modal
+    }
     const uniqueIdToSave = uniqueId ?? generateUUID()
     firebaseService.setWorkspace(uniqueIdToSave, workspace)
     router.push({
@@ -122,6 +128,7 @@ export default function Chords() {
           <button className="btn" onClick={handleAddChordBuilder}>New Builder</button>
         </>}
       </div>
+      <Notification />
     </main>
   )
 }
