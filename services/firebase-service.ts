@@ -11,7 +11,7 @@ export const firebaseConfig = {
   messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
   appId: process.env.FIREBASE_APP_ID,
 }
-
+console.log(`firebaseConfig ${firebaseConfig}`)
 
 export default class FirebaseService {
   db: Firestore
