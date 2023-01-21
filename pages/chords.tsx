@@ -22,12 +22,12 @@ type WorkshopElement = {
 
 type ChordsPageProps = {
   workspace: WorkspaceElement[]
-  uniqueId: string | undefined
+  uniqueId: string | null
 }
 
 export default function Chords(props: ChordsPageProps) {
   const [workspace, setWorkspace] = useState<WorkspaceElement[]>([])
-  const [uniqueId, setUniqueId] = useState<string | undefined>()
+  const [uniqueId, setUniqueId] = useState<string | null>()
   const [loading, setLoading] = useState<boolean>(true)
 
   const router = useRouter()
@@ -36,7 +36,7 @@ export default function Chords(props: ChordsPageProps) {
     setWorkspace(props.workspace)
     setUniqueId(props.uniqueId)
     setLoading(false)
-  }, [props.workspace, props.uniqueId], )
+  }, [props.workspace, props.uniqueId])
 
   const handleAddChordBuilder = () => {
     const ws = [...workspace]
@@ -55,7 +55,7 @@ export default function Chords(props: ChordsPageProps) {
       undefined,
       { shallow: true }
     )
-    setUniqueId(undefined)
+    setUniqueId(null)
   }
 
   const handleReload = () => {
@@ -82,6 +82,7 @@ export default function Chords(props: ChordsPageProps) {
         `/chords?id=${uniqueIdToSave}`,
         { shallow: true }
       )
+      await navigator.clipboard.writeText(uniqueIdToSave)
       setUniqueId(uniqueIdToSave)
     }
   }
@@ -106,7 +107,7 @@ export default function Chords(props: ChordsPageProps) {
 }
 
 // This gets called on every request
-export async function getServerSideProps(context: BaseContext) {
+export async function getServerSideProps(context: BaseContext): Promise<{props: ChordsPageProps}> {
   const firebaseService = FirebaseService.getInstance()
   firebaseService.initializeFirebaseApp()
   const uniqueId = context.query.id
@@ -116,5 +117,5 @@ export async function getServerSideProps(context: BaseContext) {
       props: { workspace, uniqueId }
     }
   }
-  return { props: {} }
+  return { props: { workspace: [], uniqueId: null} }
 }
