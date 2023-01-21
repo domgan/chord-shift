@@ -82,7 +82,8 @@ export default function Chords(props: ChordsPageProps) {
         `/chords?id=${uniqueIdToSave}`,
         { shallow: true }
       )
-      await navigator.clipboard.writeText(uniqueIdToSave)
+      await navigator.clipboard.writeText(window.location.href)
+      triggerNotification('Link to the workspace was saved to your clipboard')
       setUniqueId(uniqueIdToSave)
     }
   }
