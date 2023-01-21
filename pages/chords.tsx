@@ -7,6 +7,7 @@ import { useRouter } from "next/router"
 import Spinner from "../components/spinner"
 import Notification, { triggerNotification } from "../components/notification"
 import ChordsWorkshop from "../components/chords-workshop"
+import { BaseContext } from 'next/dist/shared/lib/utils'
 
 
 export type WorkspaceElement = {
@@ -19,28 +20,23 @@ type WorkshopElement = {
   chords: Chord[]
 }
 
-const firebaseService = new FirebaseService()  // inside or outside default component?
+type ChordsPageProps = {
+  workspace: WorkspaceElement[]
+  uniqueId: string | undefined
+}
 
-export default function Chords() {
+export default function Chords(props: ChordsPageProps) {
   const [workspace, setWorkspace] = useState<WorkspaceElement[]>([])
   const [uniqueId, setUniqueId] = useState<string | undefined>()
   const [loading, setLoading] = useState<boolean>(true)
 
   const router = useRouter()
 
-  const fetchWorkspace = async (linkId: string) => {
-    const workspaceFromFirebase = await firebaseService.getWorkspace(linkId)
-    setWorkspace(workspaceFromFirebase)
-  }
-
   useEffect(() => {
-    if (router.isReady) {
-      const uniqueIdFromQuery = router.query.id?.toString()
-      uniqueIdFromQuery && fetchWorkspace(uniqueIdFromQuery)
-      setUniqueId(uniqueIdFromQuery)
-      setLoading(false)
-    }
-  }, [router.isReady])
+    setWorkspace(props.workspace)
+    setUniqueId(props.uniqueId)
+    setLoading(false)
+  }, [props.workspace, props.uniqueId], )
 
   const handleAddChordBuilder = () => {
     const ws = [...workspace]
@@ -66,21 +62,28 @@ export default function Chords() {
     router.reload()
   }
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (workspace.length === 0) {
       triggerNotification('You cannot save empty workspace')
       return
+    } else {
+      const uniqueIdToSave = uniqueId ?? generateUUID()
+      const response = await fetch('/api/workspace-save', {
+        method: 'POST',
+        body: JSON.stringify({ id: uniqueIdToSave, workspace }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      router.push({
+          pathname: `/chords`,
+          query: { id: uniqueIdToSave }
+        },
+        `/chords?id=${uniqueIdToSave}`,
+        { shallow: true }
+      )
+      setUniqueId(uniqueIdToSave)
     }
-    const uniqueIdToSave = uniqueId ?? generateUUID()
-    firebaseService.setWorkspace(uniqueIdToSave, workspace)
-    router.push({
-      pathname: `/chords`,
-      query: { id: uniqueIdToSave }
-    },
-      `/chords?id=${uniqueIdToSave}`,
-      { shallow: true }
-    )
-    setUniqueId(uniqueIdToSave)
   }
 
   return (
@@ -100,4 +103,18 @@ export default function Chords() {
       <Notification />
     </main>
   )
+}
+
+// This gets called on every request
+export async function getServerSideProps(context: BaseContext) {
+  const firebaseService = FirebaseService.getInstance()
+  firebaseService.initializeFirebaseApp()
+  const uniqueId = context.query.id
+  if (uniqueId) {
+    const workspace = await firebaseService.getWorkspace(uniqueId)
+    return {
+      props: { workspace, uniqueId }
+    }
+  }
+  return { props: {} }
 }
