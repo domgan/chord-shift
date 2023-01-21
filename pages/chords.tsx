@@ -33,6 +33,7 @@ export default function Chords(props: ChordsPageProps) {
   const router = useRouter()
 
   useEffect(() => {
+    // props.uniqueId && triggerNotification('Workspace loaded successfully')  // todo show not-twice
     setWorkspace(props.workspace)
     setUniqueId(props.uniqueId)
     setLoading(false)
@@ -82,7 +83,7 @@ export default function Chords(props: ChordsPageProps) {
         `/chords?id=${uniqueIdToSave}`,
         { shallow: true }
       )
-      await navigator.clipboard.writeText(window.location.href)
+      await navigator.clipboard.writeText(`https://chord-shift.vercel.app/chords?id=${uniqueIdToSave}`)
       triggerNotification('Link to the workspace was saved to your clipboard')
       setUniqueId(uniqueIdToSave)
     }
