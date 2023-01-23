@@ -11,7 +11,7 @@ const getDocument = async (url: string): Promise<Document> => {
   return dom.window.document;
 }
 
-const parseChords = (contentRaw: string): string[][] => {
+export const parseChords = (contentRaw: string): string[][] => {
   const contentLines = contentRaw.split('\r\n').map(line => line.replace(/\s+/g, ''))
   const chords: string[][] = []
   contentLines.forEach(line => {
@@ -28,6 +28,3 @@ export default async function extractChords(url: string): Promise<string[][]> {
   const contentRaw = JSON.parse(dataContent!).store.page.data.tab_view.wiki_tab.content
   return parseChords(contentRaw)
 }
-
-const test_url = 'https://tabs.ultimate-guitar.com/tab/bruce-springsteen/streets-of-philadelphia-chords-84466'
-extractChords(test_url).then(chords => { console.log(chords) })
