@@ -8,6 +8,7 @@ import Spinner from "../components/spinner"
 import Notification, { triggerNotification } from "../components/notification"
 import ChordsWorkshop from "../components/chords-workshop"
 import { BaseContext } from 'next/dist/shared/lib/utils'
+import Head from "next/head"
 
 
 export type WorkspaceElement = {
@@ -77,9 +78,9 @@ export default function Chords(props: ChordsPageProps) {
         },
       });
       router.push({
-          pathname: `/chords`,
-          query: { id: uniqueIdToSave }
-        },
+        pathname: `/chords`,
+        query: { id: uniqueIdToSave }
+      },
         `/chords?id=${uniqueIdToSave}`,
         { shallow: true }
       )
@@ -91,6 +92,7 @@ export default function Chords(props: ChordsPageProps) {
 
   return (
     <main className='main'>
+      <Head><title>| chord-shift |</title></Head>
       <div className="absolute grid">
         <Link className="bg-blue-500 hover:bg-blue-700 text-white font-bold m-1 py-1 px-2 border border-blue-700 rounded text-center" href='/'>Home</Link>
         <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold m-1 py-1 px-2 border-4 border-red-700 rounded" onClick={handleNew}>New</button>
@@ -109,7 +111,7 @@ export default function Chords(props: ChordsPageProps) {
 }
 
 // This gets called on every request
-export async function getServerSideProps(context: BaseContext): Promise<{props: ChordsPageProps}> {
+export async function getServerSideProps(context: BaseContext): Promise<{ props: ChordsPageProps }> {
   const firebaseService = FirebaseService.getInstance()
   firebaseService.initializeFirebaseApp()
   const uniqueId = context.query.id
@@ -119,5 +121,5 @@ export async function getServerSideProps(context: BaseContext): Promise<{props: 
       props: { workspace, uniqueId }
     }
   }
-  return { props: { workspace: [], uniqueId: null} }
+  return { props: { workspace: [], uniqueId: null } }
 }
