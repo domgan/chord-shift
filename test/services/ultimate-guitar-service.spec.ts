@@ -2,7 +2,7 @@
 * @jest-environment node
 */
 import '@testing-library/jest-dom'
-import extractChords, { parseChords } from '../../services/ultimate-guitar-service'
+import extractChords, { parseChords } from '../../src/services/ultimate-guitar-service'
 
 
 describe('parseChords', () => {
