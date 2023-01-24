@@ -9,6 +9,8 @@ import Notification, { triggerNotification } from "../components/notification"
 import ChordsWorkshop from "../components/chords-workshop"
 import { BaseContext } from 'next/dist/shared/lib/utils'
 import Head from "next/head"
+// import extractChords from "../services/ultimate-guitar-service"
+import getWorkspaceFromUltimateGuitar from "../features/contruct-workspace"
 
 
 export type WorkspaceElement = {
@@ -16,7 +18,7 @@ export type WorkspaceElement = {
   element: WorkshopElement
 }
 
-type WorkshopElement = {
+export type WorkshopElement = {
   id: number,
   chords: Chord[]
 }
@@ -90,12 +92,24 @@ export default function Chords(props: ChordsPageProps) {
     }
   }
 
+  const handleLoadFromUltimateGuitar = async () => {
+    const testUrl = 'https://tabs.ultimate-guitar.com/tab/bruce-springsteen/streets-of-philadelphia-chords-84466'
+    const response = await fetch(`/api/get-ultimate-guitar-chords?url=${encodeURI(testUrl)}`, {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+    })
+    // const ultimateChords = [['Am', 'F', 'C'], ['C', 'D', 'E']]
+    const ultimateChords = (await response.json()).chords
+    setWorkspace(getWorkspaceFromUltimateGuitar(ultimateChords))
+  }
+
   return (
     <main className='main'>
       <Head><title>| chord-shift |</title></Head>
       <div className="absolute grid">
         <Link className="bg-blue-500 hover:bg-blue-700 text-white font-bold m-1 py-1 px-2 border border-blue-700 rounded text-center" href='/'>Home</Link>
         <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold m-1 py-1 px-2 border-4 border-red-700 rounded" onClick={handleNew}>New</button>
+        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold m-1 py-1 px-2 border-4 border-yellow-700 rounded" onClick={handleLoadFromUltimateGuitar}>Load</button>
         <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold m-1 py-1 px-2 border-4 border-yellow-700 rounded" onClick={handleReload}>Reload</button>
         <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold m-1 py-1 px-2 border-4 border-green-700 rounded" onClick={handleSave}>Save</button>
       </div>
