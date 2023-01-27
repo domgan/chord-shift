@@ -104,9 +104,9 @@ export default function Chords(props: ChordsPageProps) {
   }
 
   return (
-    <main className='main'>
+    <main className='main overflow-auto'>
       <Head><title>| chord-shift |</title></Head>
-      <div className="absolute grid">
+      <div className="absolute grid ">
         <Link className="bg-blue-500 hover:bg-blue-700 text-white font-bold m-1 py-1 px-2 border border-blue-700 rounded text-center" href='/'>Home</Link>
         <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold m-1 py-1 px-2 border-4 border-red-700 rounded" onClick={handleNew}>New</button>
         <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold m-1 py-1 px-2 border-4 border-yellow-700 rounded" onClick={handleLoadFromUltimateGuitar}>Load</button>

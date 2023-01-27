@@ -32,7 +32,7 @@ export default function ChordsWorkshop(props: ChordsWorkshopProps) {
             <Image src='/plus.svg' alt='plus' width={40} height={40} />
           </button>
         </div>
-        <button onClick={handleDelete} className='absolute top-0 right-0 rounded-full bg-white hover:bg-red-500 h-10 w-10 focus:outline-none grid place-items-center'>
+        <button onClick={handleDelete} className='absolute top-0 right-0 rounded-full hover:bg-red-500 h-8 w-8 focus:outline-none grid place-items-center'>
           <Image alt='close' width={24} height={24} src='/close.svg' />
         </button>
       </div>
