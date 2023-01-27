@@ -24,12 +24,12 @@ export default function ChordsWorkshop(props: ChordsWorkshopProps) {
     <div className="p-5">
       {showChordBuilder && <ChordBuilder chords={chords} setShowChordBuilder={setShowChordBuilder} />}
       <div className='relative grid grid-flow-row grid-cols-8 gap-4 p-4 rounded-md shadow-md bg-indigo-800'>
-        <div className="absolute top-0 left-0 text-xs text-red-500 font-bold">This is a watermark</div>
+        <div className="absolute top-0 left-0 text-xs text-red-600 font-bold">todo placeholder</div>
         {chords.map(chord => <ChordCard key={chord.id} chord={chord} chords={chords} setChords={setChords} />)}
         <div className="relative rounded-full flex items-center justify-center">
           <button onClick={() => setShowChordBuilder(true)}
             className='bg-green-500 text-white rounded-full h-12 w-12 text-center text-xl hover:bg-green-600 focus:outline-none grid place-items-center'>
-            <Image src='/plus.svg' alt='plus' width={40} height={40} />
+            <Image src='/plus.svg' alt='plus' width={40} height={40} priority />
           </button>
         </div>
         <button onClick={handleDelete} className='absolute top-0 right-0 rounded-full hover:bg-red-500 h-8 w-8 focus:outline-none grid place-items-center'>
