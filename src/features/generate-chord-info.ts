@@ -1,4 +1,4 @@
-import { Chord } from "../components/chord-card";
+import { Chord, chromatics } from "../components/chord-card";
 
 export const tonalitiesMap: { [key: string]: string } = {
   major: '',
@@ -14,11 +14,11 @@ export const tonalitiesMap: { [key: string]: string } = {
 }
 
 export function generateNotes(chord: Chord): string[] {  // (rootNote: string, tonality: string, chromatics: string)
-  const notes = ["C", "C♯", "D", "D♯", "E", "F", "F♯", "G", "G♯", "A", "A♯", "B"];
+  const notes = ["C", "C♯", "D", "D♯", "E", "F", "F♯", "G", "G♯", "A", "A♯", "B"]
 
   // normalize
   let rootNote;
-  if (chord.chromatic === '♭') {
+  if (chord.chromatic === chromatics.flat) {
     rootNote = notes[(notes.indexOf(chord.note) + 11) % 12]
   } else {
     rootNote = chord.note + chord.chromatic
@@ -76,8 +76,8 @@ export function generateNotes(chord: Chord): string[] {  // (rootNote: string, t
       throw new Error("Invalid tonality")
   }
   // denormalize
-  if (chord.chromatic === '♭' || ((chord.tonality.includes('minor') || chord.tonality.includes('diminished')) && rootNote[1] !== '♯')) {
-    chordNotes = chordNotes.map(n => n.includes('♯') ? notes[(notes.indexOf(n) + 1)] + '♭' : n)
+  if (chord.chromatic === chromatics.flat || ((chord.tonality.includes('minor') || chord.tonality.includes('diminished')) && rootNote[1] !== chromatics.sharp)) {
+    chordNotes = chordNotes.map(n => n.includes(chromatics.sharp) ? notes[(notes.indexOf(n) + 1)] + chromatics.flat : n)
   }
 
   return chordNotes

@@ -2,6 +2,12 @@ import { Dispatch, SetStateAction, useState } from 'react'
 import Image from 'next/image'
 import { generateLabel, generateNotes } from '../features/generate-chord-info'
 
+export const chromatics = {
+  none: '',
+  sharp: '♯',
+  flat: '♭'
+}
+
 export type Chord = {
   id: number
   note: string,

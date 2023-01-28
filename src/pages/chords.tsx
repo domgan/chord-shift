@@ -33,7 +33,6 @@ export default function Chords(props: ChordsPageProps) {
   const [uniqueId, setUniqueId] = useState<string | null>()
   const [loading, setLoading] = useState<boolean>(true)
   const [showUltimateInput, setShowUltimateInput] = useState<boolean>(false)
-  // const [ultimateUrl, setUltimateUrl] = useState<string>()
 
   const router = useRouter()
 
@@ -95,14 +94,19 @@ export default function Chords(props: ChordsPageProps) {
   }
 
   const loadFromUltimateGuitar = async (ultimateUrl: string) => {
-    const response = await fetch(`/api/get-ultimate-guitar-chords?url=${encodeURI(ultimateUrl!)}`, {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' },
-    })
-    // const ultimateChords = [['Am', 'F', 'C'], ['C', 'D', 'E']]
-    const ultimateChords = (await response.json()).chords
-    setWorkspace(getWorkspaceFromUltimateGuitar(ultimateChords))
-  }
+    handleNew()
+    try {
+      const response = await fetch(`/api/get-ultimate-guitar-chords?url=${encodeURI(ultimateUrl!)}`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+      });
+      const ultimateChords = (await response.json()).chords;
+      setWorkspace(getWorkspaceFromUltimateGuitar(ultimateChords));
+    } catch (error) {
+      triggerNotification('An error occurred while loading chords from Ultimate Guitar.')
+    }
+  };
+
 
   return (
     <main className='main overflow-auto'>

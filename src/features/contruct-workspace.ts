@@ -1,14 +1,21 @@
-import { Chord } from "../components/chord-card"
+import { Chord, chromatics } from "../components/chord-card"
 import { WorkshopElement, WorkspaceElement } from "../pages/chords"
 import { tonalitiesMap } from "./generate-chord-info"
 
+const getChromatic = (chord: string): string =>
+  chord.match('b') ? chromatics.flat : chord.match('#') ? chromatics.sharp : chromatics.none;
+
+const getTonality = (chord: string): string => {
+  const rawTonality = chord.slice(1).replace('b', '').replace('#', '')
+  return Object.keys(tonalitiesMap).find(key => tonalitiesMap[key] === rawTonality)!  // todo if not found then what
+}
 
 const parseChord = (chord: string, id: number): Chord => {
   return {
     id,
     note: chord[0],
-    chromatic: '',  // todo
-    tonality: Object.keys(tonalitiesMap).find(key => tonalitiesMap[key] === '')!  // todo
+    chromatic: getChromatic(chord),
+    tonality: getTonality(chord)
   }
 }
 
