@@ -2,6 +2,12 @@ import { Dispatch, SetStateAction, useState } from 'react'
 import Image from 'next/image'
 import { generateLabel, generateNotes } from '../features/generate-chord-info'
 
+export const chromatics = {
+  none: '',
+  sharp: '♯',
+  flat: '♭'
+}
+
 export type Chord = {
   id: number
   note: string,
@@ -25,7 +31,7 @@ export default function ChordCard(props: ChordCardProps) {
 
   const RemoveButton = () => {
     return (
-      <button className='absolute top-0 right-0 rounded-full bg-white hover:bg-red-500 h-8 w-8 focus:outline-none grid place-items-center'
+      <button className='absolute top-0 right-0 rounded-full bg-white hover:bg-red-500 h-6 w-6 focus:outline-none grid place-items-center'
         onClick={handleRemove}><Image alt='close' width={24} height={24} src='/close.svg' />
       </button>
     )

@@ -9,6 +9,8 @@ import Notification, { triggerNotification } from "../components/notification"
 import ChordsWorkshop from "../components/chords-workshop"
 import { BaseContext } from 'next/dist/shared/lib/utils'
 import Head from "next/head"
+import getWorkspaceFromUltimateGuitar from "../features/contruct-workspace"
+import UltimateInputModal from "../components/ultimate-input-modal"
 
 
 export type WorkspaceElement = {
@@ -16,7 +18,7 @@ export type WorkspaceElement = {
   element: WorkshopElement
 }
 
-type WorkshopElement = {
+export type WorkshopElement = {
   id: number,
   chords: Chord[]
 }
@@ -30,6 +32,7 @@ export default function Chords(props: ChordsPageProps) {
   const [workspace, setWorkspace] = useState<WorkspaceElement[]>([])
   const [uniqueId, setUniqueId] = useState<string | null>()
   const [loading, setLoading] = useState<boolean>(true)
+  const [showUltimateInput, setShowUltimateInput] = useState<boolean>(false)
 
   const router = useRouter()
 
@@ -48,7 +51,7 @@ export default function Chords(props: ChordsPageProps) {
   }
 
   const getWorkspaceElement = (id: number, element: WorkshopElement) => {
-    return <ChordsWorkshop id={id} chords={element.chords} workspace={workspace} setWorkspace={setWorkspace} />
+    return <ChordsWorkshop key={id} id={id} chords={element.chords} workspace={workspace} setWorkspace={setWorkspace} />
   }
 
   const handleNew = () => {
@@ -90,21 +93,40 @@ export default function Chords(props: ChordsPageProps) {
     }
   }
 
+  const loadFromUltimateGuitar = async (ultimateUrl: string) => {
+    handleNew()
+    try {
+      const response = await fetch(`/api/get-ultimate-guitar-chords?url=${encodeURI(ultimateUrl!)}`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+      });
+      const ultimateChords = (await response.json()).chords;
+      setWorkspace(getWorkspaceFromUltimateGuitar(ultimateChords));
+    } catch (error) {
+      triggerNotification('An error occurred while loading chords from Ultimate Guitar.')
+    }
+  };
+
+
   return (
-    <main className='main'>
+    <main className='main overflow-auto'>
       <Head><title>| chord-shift |</title></Head>
-      <div className="absolute grid">
+      <div className="absolute grid ">
         <Link className="bg-blue-500 hover:bg-blue-700 text-white font-bold m-1 py-1 px-2 border border-blue-700 rounded text-center" href='/'>Home</Link>
         <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold m-1 py-1 px-2 border-4 border-red-700 rounded" onClick={handleNew}>New</button>
+        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold m-1 py-1 px-2 border-4 border-yellow-700 rounded" onClick={() => setShowUltimateInput(true)}>Load</button>
         <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold m-1 py-1 px-2 border-4 border-yellow-700 rounded" onClick={handleReload}>Reload</button>
         <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold m-1 py-1 px-2 border-4 border-green-700 rounded" onClick={handleSave}>Save</button>
       </div>
       <div className="max-w-screen-lg p-10 mx-auto">
         {loading ? <Spinner /> :
-          <>{workspace.map(ws => getWorkspaceElement(ws.id, ws.element))}
-            <button className="btn" onClick={handleAddChordBuilder}>New Builder</button></>
+          <>
+            {workspace.map(ws => getWorkspaceElement(ws.id, ws.element))}
+            <button className="btn" onClick={handleAddChordBuilder}>New Builder</button>
+          </>
         }
       </div>
+      {showUltimateInput && <UltimateInputModal loadFromUltimateGuitar={loadFromUltimateGuitar} setShowUltimateInput={setShowUltimateInput} />}
       <Notification />
     </main>
   )
