@@ -8,3 +8,24 @@
     /* bg-gradient-to-r from-slate-300 to-purple-400 -- light mode */
   }
 }
+
+/* @layer utilities {
+  .scrollbar::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .scrollbar::-webkit-scrollbar-track {
+    background-color: #f7f4ed;
+    border-radius: 1rem;
+  }
+
+  .scrollbar::-webkit-scrollbar-thumb {
+    background-color: #e0cbcb;
+    border-radius: 1rem;
+    border: 0.1rem solid #f6f7ed;
+  }
+
+  .scrollbar::-webkit-scrollbar-thumb:hover {
+    background-color: #c0a0b9;
+  }
+} */

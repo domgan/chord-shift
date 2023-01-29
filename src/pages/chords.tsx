@@ -124,7 +124,7 @@ export default function Chords(props: ChordsPageProps) {
 
 
   return (
-    <main className='main overflow-auto'>
+    <main className='main overflow-y-scroll scrollbar'>
       <Head><title>| chord-shift |</title></Head>
       <div className="fixed xl:grid text-center bg-indigo-800 z-10">
         <Link className="bg-blue-500 hover:bg-blue-700 text-white font-bold m-1 py-1 px-2 border border-blue-700 rounded text-center text-lg" href='/'>Home</Link>
