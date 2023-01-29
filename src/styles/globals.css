@@ -2,26 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --green: #3FE79E;
-  --dark: #0F0235;
-  --off-white: #F5F5F3;
-
-  --space-sm: 0.5rem;
-  --space-md: 1rem;
-  --space-lg: 1.5rem;
-
-  --font-size-sm: 0.5rem;
-  --font-size-md: 1rem;
-  --font-size-lg: 2rem;
-
-  /* background-color: rgb(30 41 59); */
-}
-
 @layer components {
-  .btn {
-    @apply inline-block bg-gray-200 px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2 hover:bg-sky-600/50 bg-sky-500/75;
-  }
   .main {
     @apply bg-gradient-to-r from-slate-800 to-purple-800 fixed top-0 left-0 w-screen h-screen bg-center bg-cover;
     /* bg-gradient-to-r from-slate-300 to-purple-400 -- light mode */

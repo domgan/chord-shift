@@ -21,10 +21,10 @@ export default function ChordsWorkshop(props: ChordsWorkshopProps) {
   }
 
   return (
-    <div className="p-5">
+    <div className="p-3">
       {showChordBuilder && <ChordBuilder chords={chords} setShowChordBuilder={setShowChordBuilder} />}
-      <div className='relative grid grid-flow-row grid-cols-8 gap-4 p-4 rounded-md shadow-md bg-indigo-800'>
-        <div className="absolute top-0 left-0 text-xs text-red-600 font-bold">todo placeholder</div>
+      <div className='relative grid grid-cols-6 gap-3 p-3 rounded-md shadow-md bg-indigo-800 sm:grid-cols-10'>
+        <div className="absolute top-0 left-0 text-xs text-slate-600">todo placeholder</div>
         {chords.map(chord => <ChordCard key={chord.id} chord={chord} chords={chords} setChords={setChords} />)}
         <div className="relative rounded-full flex items-center justify-center">
           <button onClick={() => setShowChordBuilder(true)}

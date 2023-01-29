@@ -1,4 +1,4 @@
-import { Chord, chromatics } from "../components/chord-card";
+import { Chord, chromatics } from "../components/chord-card"
 
 export const tonalitiesMap: { [key: string]: string } = {
   major: '',
@@ -17,15 +17,15 @@ export function generateNotes(chord: Chord): string[] {  // (rootNote: string, t
   const notes = ["C", "C♯", "D", "D♯", "E", "F", "F♯", "G", "G♯", "A", "A♯", "B"]
 
   // normalize
-  let rootNote;
+  let rootNote
   if (chord.chromatic === chromatics.flat) {
     rootNote = notes[(notes.indexOf(chord.note) + 11) % 12]
   } else {
     rootNote = chord.note + chord.chromatic
   }
 
-  let chordNotes = [rootNote];
-  let rootIndex = notes.indexOf(rootNote);
+  let chordNotes = [rootNote]
+  let rootIndex = notes.indexOf(rootNote)
 
   switch (chord.tonality) {
     case "major":

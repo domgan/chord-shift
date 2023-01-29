@@ -51,7 +51,7 @@ export default function ChordBuilder(props: ChooseChordProps) {
   return (
     <>
       <div className="absolute rounded-lg p-4 m-auto max-w-lg z-20 shadow-md bg-gradient-to-r from-cyan-500 to-blue-500">
-        <div className="flex items-start justify-between p-4 border-b rounded-t dark:border-gray-600">
+        <div className="flex items-start justify-between p-3 dark:border-gray-600">
           <h3 className="text-lg font-medium">
             Chord Builder
           </h3>
@@ -60,9 +60,9 @@ export default function ChordBuilder(props: ChooseChordProps) {
           <ChooseChord />
         </div>
         {/* <p>{note}{chromatic}{tonality}</p> */}
-        <div className="flex items-center p-6 space-x-2 border-t border-gray-200 rounded-b dark:border-gray-600">
-          <button className='bg-green-500 hover:bg-green-600 hover:shadow-lg text-white font-medium p-2 rounded-lg w-24 h-12' onClick={handleSave}>Save</button>
-          <button className='bg-red-500 hover:bg-red-600 text-white p-2 rounded-lg hover:shadow-lg font-medium w-24 h-12' onClick={() => props.setShowChordBuilder(false)}>Cancel</button>
+        <div className="flex justify-between p-2 space-x-2 dark:border-gray-600">
+          <button className='bg-green-500 hover:bg-green-600 hover:shadow-lg border text-white font-medium rounded-lg w-24 h-12' onClick={handleSave}>Save</button>
+          <button className='bg-red-500 hover:bg-red-600 hover:shadow-lg border text-white font-medium rounded-lg w-24 h-12' onClick={() => props.setShowChordBuilder(false)}>Cancel</button>
         </div>
       </div>
       <div className="fixed top-0 left-0 w-screen h-screen bg-black bg-opacity-25 z-10"></div>

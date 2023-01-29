@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react"
 
 type Props = {
   // setUltimateUrl: Dispatch<SetStateAction<string | undefined>>
@@ -22,7 +22,7 @@ export default function UltimateInputModal(props: Props) {
       <div className="fixed inset-0 transition-opacity">
         <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
       </div>
-      <div className="bg-white rounded-lg overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full">
+      <div className="bg-white rounded-lg overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full bg-gradient-to-r from-cyan-500 to-blue-500">
         <form className="px-4 py-5 sm:p-6">
           <div>
             <label className="block text-gray-700 font-medium mb-2">

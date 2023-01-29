@@ -3,7 +3,7 @@ import { WorkshopElement, WorkspaceElement } from "../pages/chords"
 import { tonalitiesMap } from "./generate-chord-info"
 
 const getChromatic = (chord: string): string =>
-  chord.match('b') ? chromatics.flat : chord.match('#') ? chromatics.sharp : chromatics.none;
+  chord.match('b') ? chromatics.flat : chord.match('#') ? chromatics.sharp : chromatics.none
 
 const getTonality = (chord: string): string => {
   const rawTonality = chord.slice(1).replace('b', '').replace('#', '')

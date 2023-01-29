@@ -44,9 +44,11 @@ export default function Chords(props: ChordsPageProps) {
       handleNew()
       triggerNotification('An error occurred while loading chords. Check your link.')
     } else {
-      setWorkspace(props.workspace)
-      setUniqueId(props.uniqueId)
-      triggerNotification('Workspace loaded successfully')
+      if (props.uniqueId) {
+        setWorkspace(props.workspace)
+        setUniqueId(props.uniqueId)
+        triggerNotification('Workspace loaded successfully.')
+      }
     }
     setLoading(false)
   }, [props.workspace, props.uniqueId, dataFetchedRef])
@@ -77,7 +79,7 @@ export default function Chords(props: ChordsPageProps) {
 
   const handleSave = async () => {
     if (workspace.length === 0) {
-      triggerNotification('You cannot save empty workspace')
+      triggerNotification('You cannot save empty workspace.')
       return
     } else {
       const uniqueIdToSave = uniqueId ?? generateUUID()
@@ -87,7 +89,9 @@ export default function Chords(props: ChordsPageProps) {
         headers: {
           'Content-Type': 'application/json',
         },
-      });
+      })
+      if (response.status !== 201)
+        triggerNotification('Saving failed.')
       router.push({
         pathname: `/chords`,
         query: { id: uniqueIdToSave }
@@ -95,8 +99,8 @@ export default function Chords(props: ChordsPageProps) {
         `/chords?id=${uniqueIdToSave}`,
         { shallow: true }
       )
-      await navigator.clipboard.writeText(`https://chord-shift.vercel.app/chords?id=${uniqueIdToSave}`)
-      triggerNotification('Link to the workspace was saved to your clipboard')
+      triggerNotification('Link to the workspace was saved to your clipboard.')
+      navigator.clipboard.writeText(`https://chord-shift.vercel.app/chords?id=${uniqueIdToSave}`)
       setUniqueId(uniqueIdToSave)
     }
   }
@@ -108,31 +112,32 @@ export default function Chords(props: ChordsPageProps) {
       const response = await fetch(`/api/get-ultimate-guitar-chords?url=${encodeURI(ultimateUrl!)}`, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
-      });
-      const ultimateChords = (await response.json()).chords;
-      setWorkspace(getWorkspaceFromUltimateGuitar(ultimateChords));
+      })
+      const ultimateChords = (await response.json()).chords
+      setWorkspace(getWorkspaceFromUltimateGuitar(ultimateChords))
+      triggerNotification('Workspace loaded successfully from Ultimate Guitar.')
     } catch (error) {
       triggerNotification('An error occurred while loading chords from Ultimate Guitar.')
     }
     setLoading(false)
-  };
+  }
 
 
   return (
     <main className='main overflow-auto'>
       <Head><title>| chord-shift |</title></Head>
-      <div className="absolute grid ">
-        <Link className="bg-blue-500 hover:bg-blue-700 text-white font-bold m-1 py-1 px-2 border border-blue-700 rounded text-center" href='/'>Home</Link>
-        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold m-1 py-1 px-2 border-4 border-red-700 rounded" onClick={handleNew}>New</button>
+      <div className="fixed xl:grid text-center flex-col bg-indigo-800 z-10">
+        <Link className="bg-blue-500 hover:bg-blue-700 text-white font-bold m-1 py-1 px-2 border border-blue-700 rounded text-center text-lg" href='/'>Home</Link>
+        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold m-1 py-1 px-2 border-4 border-red-700 rounded h-10" onClick={handleNew}>New</button>
         <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold m-1 py-1 px-2 border-4 border-yellow-700 rounded" onClick={() => setShowUltimateInput(true)}>Load</button>
         <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold m-1 py-1 px-2 border-4 border-yellow-700 rounded" onClick={handleReload}>Reload</button>
         <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold m-1 py-1 px-2 border-4 border-green-700 rounded" onClick={handleSave}>Save</button>
       </div>
-      <div className="max-w-screen-lg p-10 mx-auto">
+      <div className="max-w-screen-xl mx-auto">
         {loading ? <Spinner /> :
           <>
             {workspace.map(ws => getWorkspaceElement(ws.id, ws.element))}
-            <button className="btn" onClick={handleAddChordBuilder}>New Builder</button>
+            <button className="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded" onClick={handleAddChordBuilder}>New Builder</button>
           </>
         }
       </div>
