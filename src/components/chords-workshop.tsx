@@ -36,6 +36,6 @@ export default function ChordsWorkshop(props: ChordsWorkshopProps) {
           <Image alt='close' width={24} height={24} src='/close.svg' />
         </button>
       </div>
-    </div >
+    </div>
   )
 }

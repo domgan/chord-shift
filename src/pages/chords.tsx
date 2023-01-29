@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { Chord } from "../components/chord-card"
 import Link from "next/link"
 import generateUUID from "../features/generate-uuid"
@@ -33,15 +33,23 @@ export default function Chords(props: ChordsPageProps) {
   const [uniqueId, setUniqueId] = useState<string | null>()
   const [loading, setLoading] = useState<boolean>(true)
   const [showUltimateInput, setShowUltimateInput] = useState<boolean>(false)
+  const dataFetchedRef = useRef(false)
 
   const router = useRouter()
 
   useEffect(() => {
-    // props.uniqueId && triggerNotification('Workspace loaded successfully')  // todo show not-twice
-    setWorkspace(props.workspace)
-    setUniqueId(props.uniqueId)
+    if (dataFetchedRef.current) return
+    dataFetchedRef.current = true
+    if (props.uniqueId === 'ERROR') {
+      handleNew()
+      triggerNotification('An error occurred while loading chords. Check your link.')
+    } else {
+      setWorkspace(props.workspace)
+      setUniqueId(props.uniqueId)
+      triggerNotification('Workspace loaded successfully')
+    }
     setLoading(false)
-  }, [props.workspace, props.uniqueId])
+  }, [props.workspace, props.uniqueId, dataFetchedRef])
 
   const handleAddChordBuilder = () => {
     const ws = [...workspace]
@@ -50,7 +58,7 @@ export default function Chords(props: ChordsPageProps) {
     setWorkspace(ws)
   }
 
-  const getWorkspaceElement = (id: number, element: WorkshopElement) => {
+  const getWorkspaceElement = (id: number, element: WorkshopElement) => {  // todo different elements
     return <ChordsWorkshop key={id} id={id} chords={element.chords} workspace={workspace} setWorkspace={setWorkspace} />
   }
 
@@ -94,6 +102,7 @@ export default function Chords(props: ChordsPageProps) {
   }
 
   const loadFromUltimateGuitar = async (ultimateUrl: string) => {
+    setLoading(true)
     handleNew()
     try {
       const response = await fetch(`/api/get-ultimate-guitar-chords?url=${encodeURI(ultimateUrl!)}`, {
@@ -105,6 +114,7 @@ export default function Chords(props: ChordsPageProps) {
     } catch (error) {
       triggerNotification('An error occurred while loading chords from Ultimate Guitar.')
     }
+    setLoading(false)
   };
 
 
@@ -132,15 +142,19 @@ export default function Chords(props: ChordsPageProps) {
   )
 }
 
-// This gets called on every request
 export async function getServerSideProps(context: BaseContext): Promise<{ props: ChordsPageProps }> {
   const firebaseService = FirebaseService.getInstance()
-  firebaseService.initializeFirebaseApp()
+  // firebaseService.initializeFirebaseApp()
   const uniqueId = context.query.id
   if (uniqueId) {
-    const workspace = await firebaseService.getWorkspace(uniqueId)
-    return {
-      props: { workspace, uniqueId }
+    try {
+      const workspace = await firebaseService.getWorkspace(uniqueId)
+      if (!workspace) {
+        throw new Error(`Bad firebase response: ${JSON.stringify(workspace)}`)
+      }
+      return { props: { workspace, uniqueId } }
+    } catch (error) {
+      return { props: { workspace: [], uniqueId: 'ERROR' } }
     }
   }
   return { props: { workspace: [], uniqueId: null } }
