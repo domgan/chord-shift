@@ -126,18 +126,18 @@ export default function Chords(props: ChordsPageProps) {
   return (
     <main className='main overflow-auto'>
       <Head><title>| chord-shift |</title></Head>
-      <div className="fixed xl:grid text-center flex-col bg-indigo-800 z-10">
+      <div className="fixed xl:grid text-center bg-indigo-800 z-10">
         <Link className="bg-blue-500 hover:bg-blue-700 text-white font-bold m-1 py-1 px-2 border border-blue-700 rounded text-center text-lg" href='/'>Home</Link>
         <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold m-1 py-1 px-2 border-4 border-red-700 rounded h-10" onClick={handleNew}>New</button>
         <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold m-1 py-1 px-2 border-4 border-yellow-700 rounded" onClick={() => setShowUltimateInput(true)}>Load</button>
         <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold m-1 py-1 px-2 border-4 border-yellow-700 rounded" onClick={handleReload}>Reload</button>
         <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold m-1 py-1 px-2 border-4 border-green-700 rounded" onClick={handleSave}>Save</button>
       </div>
-      <div className="max-w-screen-xl mx-auto">
+      <div className="max-w-screen-xl mx-auto relative">
         {loading ? <Spinner /> :
           <>
             {workspace.map(ws => getWorkspaceElement(ws.id, ws.element))}
-            <button className="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded" onClick={handleAddChordBuilder}>New Builder</button>
+            <button className="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded absolute -bottom-32" onClick={handleAddChordBuilder}>New Builder</button>
           </>
         }
       </div>

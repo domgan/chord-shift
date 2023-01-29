@@ -39,7 +39,7 @@ export default function ChordCard(props: ChordCardProps) {
 
   return (
     <div className='flex flex-wrap justify-center relative'>
-      <button className='bg-gradient-to-r from-purple-600 to-indigo-500 h-24 w-36 rounded-sm text-center hover:to-purple-700'
+      <button className='bg-gradient-to-r from-purple-600 to-indigo-500 h-20 w-24 sm:h-24 sm:w-36 rounded-sm text-center hover:to-purple-700'
         onClick={() => setShowRemove(!showRemove)}>
         <div className='text-xl font-bold'>{generateLabel(props.chord)}</div>
         <div className="text-lg">{generateNotes(props.chord).join('-')}</div>

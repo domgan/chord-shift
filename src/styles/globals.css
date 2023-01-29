@@ -4,7 +4,7 @@
 
 @layer components {
   .main {
-    @apply bg-gradient-to-r from-slate-800 to-purple-800 fixed top-0 left-0 w-screen h-screen bg-center bg-cover;
+    @apply bg-gradient-to-r from-slate-800 to-purple-800 fixed w-screen h-screen bg-center bg-cover;
     /* bg-gradient-to-r from-slate-300 to-purple-400 -- light mode */
   }
 }
