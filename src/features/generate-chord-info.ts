@@ -1,88 +1,56 @@
-import { Chord, chromatics } from "../components/chord-card"
+import type { Chord } from '@/types/chord'
+import { Chromatic, TonalitiesMap } from '@/types/chord'
 
-export const tonalitiesMap: { [key: string]: string } = {
-  major: '',
-  minor: 'm',
-  sus2: 'sus2',
-  sus4: 'sus4',
-  augmented: 'aug',  // +
-  diminished: 'dim',
-  'major seventh': 'M7',  // △
-  'minor seventh': 'm7',
-  'dominant seventh': '7',
-  'diminished seventh': 'dim7',  // °
+const NOTES = ['C', 'C♯', 'D', 'D♯', 'E', 'F', 'F♯', 'G', 'G♯', 'A', 'A♯', 'B']
+
+const INTERVALS: Record<string, number[]> = {
+  major: [4, 7],
+  minor: [3, 7],
+  diminished: [3, 6],
+  augmented: [4, 8],
+  'major seventh': [4, 7, 11],
+  'minor seventh': [3, 7, 10],
+  'dominant seventh': [4, 7, 10],
+  'diminished seventh': [3, 6, 9],
+  sus2: [2, 7],
+  sus4: [5, 7],
 }
 
-export function generateNotes(chord: Chord): string[] {  // (rootNote: string, tonality: string, chromatics: string)
-  const notes = ["C", "C♯", "D", "D♯", "E", "F", "F♯", "G", "G♯", "A", "A♯", "B"]
-
-  // normalize
-  let rootNote
-  if (chord.chromatic === chromatics.flat) {
-    rootNote = notes[(notes.indexOf(chord.note) + 11) % 12]
+export function generateNotes(chord: Chord): string[] {
+  // Normalize root note
+  let rootNote: string
+  if (chord.chromatic === Chromatic.flat) {
+    rootNote = NOTES[(NOTES.indexOf(chord.note) + 11) % 12]
   } else {
     rootNote = chord.note + chord.chromatic
   }
 
-  let chordNotes = [rootNote]
-  let rootIndex = notes.indexOf(rootNote)
+  const rootIndex = NOTES.indexOf(rootNote)
+  const intervals = INTERVALS[chord.tonality]
 
-  switch (chord.tonality) {
-    case "major":
-      chordNotes.push(notes[(rootIndex + 4) % 12])
-      chordNotes.push(notes[(rootIndex + 7) % 12])
-      break
-    case "minor":
-      chordNotes.push(notes[(rootIndex + 3) % 12])
-      chordNotes.push(notes[(rootIndex + 7) % 12])
-      break
-    case "diminished":
-      chordNotes.push(notes[(rootIndex + 3) % 12])
-      chordNotes.push(notes[(rootIndex + 6) % 12])
-      break
-    case "augmented":
-      chordNotes.push(notes[(rootIndex + 4) % 12])
-      chordNotes.push(notes[(rootIndex + 8) % 12])
-      break
-    case "major seventh":
-      chordNotes.push(notes[(rootIndex + 4) % 12])
-      chordNotes.push(notes[(rootIndex + 7) % 12])
-      chordNotes.push(notes[(rootIndex + 11) % 12])
-      break
-    case "minor seventh":
-      chordNotes.push(notes[(rootIndex + 3) % 12])
-      chordNotes.push(notes[(rootIndex + 7) % 12])
-      chordNotes.push(notes[(rootIndex + 10) % 12])
-      break
-    case "dominant seventh":
-      chordNotes.push(notes[(rootIndex + 4) % 12])
-      chordNotes.push(notes[(rootIndex + 7) % 12])
-      chordNotes.push(notes[(rootIndex + 10) % 12])
-      break
-    case "diminished seventh":
-      chordNotes.push(notes[(rootIndex + 3) % 12])
-      chordNotes.push(notes[(rootIndex + 6) % 12])
-      chordNotes.push(notes[(rootIndex + 9) % 12])
-      break
-    case "sus2":
-      chordNotes.push(notes[(rootIndex + 2) % 12])
-      chordNotes.push(notes[(rootIndex + 7) % 12])
-      break
-    case "sus4":
-      chordNotes.push(notes[(rootIndex + 5) % 12])
-      chordNotes.push(notes[(rootIndex + 7) % 12])
-      break
-    default:
-      throw new Error("Invalid tonality")
+  if (!intervals) {
+    throw new Error(`Invalid tonality: ${chord.tonality}`)
   }
-  // denormalize
-  if (chord.chromatic === chromatics.flat || ((chord.tonality.includes('minor') || chord.tonality.includes('diminished')) && rootNote[1] !== chromatics.sharp)) {
-    chordNotes = chordNotes.map(n => n.includes(chromatics.sharp) ? notes[(notes.indexOf(n) + 1)] + chromatics.flat : n)
+
+  let chordNotes = [rootNote, ...intervals.map((i) => NOTES[(rootIndex + i) % 12])]
+
+  // Denormalize to use flats when appropriate
+  const useFlats =
+    chord.chromatic === Chromatic.flat ||
+    ((chord.tonality.includes('minor') || chord.tonality.includes('diminished')) &&
+      !rootNote.includes(Chromatic.sharp))
+
+  if (useFlats) {
+    chordNotes = chordNotes.map((n) =>
+      n.includes(Chromatic.sharp)
+        ? NOTES[(NOTES.indexOf(n) + 1) % 12] + Chromatic.flat
+        : n
+    )
   }
 
   return chordNotes
 }
 
 export function generateLabel(chord: Chord): string {
-  return chord.note + chord.chromatic + tonalitiesMap[chord.tonality]
+  return chord.note + chord.chromatic + TonalitiesMap[chord.tonality]
 }

@@ -2,30 +2,64 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer components {
-  .main {
-    @apply bg-gradient-to-r from-slate-800 to-purple-800 fixed w-screen h-screen bg-center bg-cover;
-    /* bg-gradient-to-r from-slate-300 to-purple-400 -- light mode */
+@layer base {
+  :root {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 262 83% 58%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 262 83% 58%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 262 83% 58%;
+    --chart-1: 262 83% 58%;
+    --chart-2: 280 65% 60%;
+    --chart-3: 220 70% 50%;
+    --chart-4: 340 75% 55%;
+    --chart-5: 30 80% 55%;
+    --radius: 0.75rem;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
   }
 }
 
-/* @layer utilities {
-  .scrollbar::-webkit-scrollbar {
-    width: 8px;
+@layer utilities {
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-violet-400 via-purple-400 to-pink-400;
   }
 
-  .scrollbar::-webkit-scrollbar-track {
-    background-color: #f7f4ed;
-    border-radius: 1rem;
+  .bg-gradient-mesh {
+    background-image: 
+      radial-gradient(at 40% 20%, rgba(139, 92, 246, 0.15) 0px, transparent 50%),
+      radial-gradient(at 80% 0%, rgba(168, 85, 247, 0.1) 0px, transparent 50%),
+      radial-gradient(at 0% 50%, rgba(129, 140, 248, 0.1) 0px, transparent 50%),
+      radial-gradient(at 80% 50%, rgba(236, 72, 153, 0.08) 0px, transparent 50%),
+      radial-gradient(at 0% 100%, rgba(139, 92, 246, 0.1) 0px, transparent 50%),
+      radial-gradient(at 80% 100%, rgba(6, 182, 212, 0.08) 0px, transparent 50%);
   }
 
-  .scrollbar::-webkit-scrollbar-thumb {
-    background-color: #e0cbcb;
-    border-radius: 1rem;
-    border: 0.1rem solid #f6f7ed;
+  .glass {
+    @apply bg-white/5 backdrop-blur-xl border border-white/10;
   }
 
-  .scrollbar::-webkit-scrollbar-thumb:hover {
-    background-color: #c0a0b9;
+  .glass-strong {
+    @apply bg-white/10 backdrop-blur-2xl border border-white/20;
   }
-} */
+}

@@ -1,42 +1,123 @@
-import { Dispatch, SetStateAction, useState } from "react"
+'use client'
 
-type Props = {
-  // setUltimateUrl: Dispatch<SetStateAction<string | undefined>>
-  // setShowUltimateInput: Dispatch<SetStateAction<boolean>>
-  loadFromUltimateGuitar: (ultimateUrl: string) => void
-  setShowUltimateInput: Dispatch<SetStateAction<boolean>>
-  // setShowUltimateInput: (show: boolean) => void
-  // setUltimateUrl: (url: string) => void  // todo thats better probably
+import { Download, ExternalLink, Loader2 } from 'lucide-react'
+import { useState } from 'react'
+import { Button } from '@/components/ui/button'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
+import { useWorkspaceStore } from '@/store/workspace-store'
+
+interface UltimateInputModalProps {
+  loadFromUltimateGuitar: (url: string) => Promise<void>
 }
 
-export default function UltimateInputModal(props: Props) {
-  const [url, setUrl] = useState<string>()
+export default function UltimateInputModal({
+  loadFromUltimateGuitar,
+}: UltimateInputModalProps) {
+  const [url, setUrl] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
+  const setShowUltimateInput = useWorkspaceStore(
+    (state) => state.setShowUltimateInput
+  )
 
-  const handleSubmit = () => {
-    props.loadFromUltimateGuitar(url!)
-    props.setShowUltimateInput(false)
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!url) return
+
+    setIsLoading(true)
+    await loadFromUltimateGuitar(url)
+    setIsLoading(false)
   }
 
+  const isValidUrl = url.includes('ultimate-guitar.com')
+
   return (
-    <div className="fixed bottom-0 inset-x-0 px-4 pb-4 sm:inset-0 sm:flex sm:items-center sm:justify-center">
-      <div className="fixed inset-0 transition-opacity">
-        <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
-      </div>
-      <div className="bg-white rounded-lg overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full bg-gradient-to-r from-cyan-500 to-blue-500">
-        <form className="px-4 py-5 sm:p-6">
-          <div>
-            <label className="block text-gray-700 font-medium mb-2">
-              Chord
-            </label>
-            <input className="rounded-md shadow-sm block w-full leading-5 py-2 px-3 text-gray-900 border-gray-300 transition duration-150 ease-in-out"
-              type="text" required onChange={(e) => setUrl(e.target.value)} />
+    <Dialog open onOpenChange={() => setShowUltimateInput(false)}>
+      <DialogContent className="sm:max-w-lg glass-strong">
+        <DialogHeader>
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center">
+              <Download className="h-5 w-5 text-white" />
+            </div>
+            <div>
+              <DialogTitle>Import from Ultimate Guitar</DialogTitle>
+              <DialogDescription>
+                Paste a chord tab URL to import the progression
+              </DialogDescription>
+            </div>
           </div>
+        </DialogHeader>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="space-y-2">
+            <label className="text-sm font-medium">
+              Ultimate Guitar URL
+            </label>
+            <Input
+              type="url"
+              placeholder="https://tabs.ultimate-guitar.com/tab/..."
+              value={url}
+              onChange={(e) => setUrl(e.target.value)}
+              className="bg-white/5"
+            />
+            {url && !isValidUrl && (
+              <p className="text-sm text-destructive">
+                Please enter a valid Ultimate Guitar URL
+              </p>
+            )}
+          </div>
+
+          <div className="rounded-lg bg-muted/50 p-4 space-y-2">
+            <p className="text-sm font-medium">How to get a chord URL:</p>
+            <ol className="text-sm text-muted-foreground space-y-1 list-decimal list-inside">
+              <li>Go to Ultimate Guitar</li>
+              <li>Find a song with chords (not tabs)</li>
+              <li>Copy the URL from your browser</li>
+              <li>Paste it here</li>
+            </ol>
+            <a
+              href="https://www.ultimate-guitar.com/explore?type[]=Chords"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 text-sm text-violet-400 hover:text-violet-300 transition-colors"
+            >
+              Browse chords on Ultimate Guitar
+              <ExternalLink className="h-3 w-3" />
+            </a>
+          </div>
+
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={() => setShowUltimateInput(false)}
+              disabled={isLoading}
+            >
+              Cancel
+            </Button>
+            <Button type="submit" disabled={!isValidUrl || isLoading}>
+              {isLoading ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Importing...
+                </>
+              ) : (
+                <>
+                  <Download className="h-4 w-4 mr-2" />
+                  Import Chords
+                </>
+              )}
+            </Button>
+          </DialogFooter>
         </form>
-        <div className="flex justify-between">
-          <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-l" disabled={url === undefined} onClick={handleSubmit}>Submit</button>
-          <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-r" onClick={() => props.setShowUltimateInput(false)}>Cancel</button>
-        </div>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   )
 }
