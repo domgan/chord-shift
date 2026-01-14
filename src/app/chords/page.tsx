@@ -1,71 +1,64 @@
 'use client'
 
-import type {
-  DragEndEvent
-} from '@dnd-kit/core';
+import type { DragEndEvent } from '@dnd-kit/core'
+import { closestCenter, DndContext } from '@dnd-kit/core'
+import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import {
-  closestCenter,
-  DndContext,
-  KeyboardSensor,
-  PointerSensor,
-  useSensor,
-  useSensors,
-} from '@dnd-kit/core';
-import {
-  SortableContext,
-  sortableKeyboardCoordinates,
-  verticalListSortingStrategy,
-} from '@dnd-kit/sortable';
-import {
+  ArrowUpDown,
+  BookOpen,
   Download,
   Home,
   Music,
+  Play,
   Plus,
   RefreshCw,
   Save,
   Sparkles,
-} from 'lucide-react';
-import Link from 'next/link';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { useCallback, useEffect, useRef } from 'react';
-import { toast } from 'sonner';
-import SortableBuilder from '@/components/sortable-builder';
-import { Button } from '@/components/ui/button';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Separator } from '@/components/ui/separator';
-import { Skeleton } from '@/components/ui/skeleton';
-import UltimateInputModal from '@/components/ultimate-input-modal';
-import getWorkspaceFromUltimateGuitar from '@/features/construct-workspace';
-import FirebaseService from '@/services/firebase-service';
-import { useWorkspaceStore } from '@/store/workspace-store';
+} from 'lucide-react'
+import Link from 'next/link'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { toast } from 'sonner'
+import KeyDisplay from '@/components/key-display'
+import PracticeMode from '@/components/practice-mode'
+import SortableBuilder from '@/components/sortable-builder'
+import TemplatesModal from '@/components/templates-modal'
+import TransposeModal from '@/components/transpose-modal'
+import { Button } from '@/components/ui/button'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { Separator } from '@/components/ui/separator'
+import { Skeleton } from '@/components/ui/skeleton'
+import UltimateInputModal from '@/components/ultimate-input-modal'
+import getWorkspaceFromUltimateGuitar from '@/features/construct-workspace'
+import { useDndSensors } from '@/hooks/use-dnd-sensors'
+import FirebaseService from '@/services/firebase-service'
+import { useWorkspaceStore } from '@/store/workspace-store'
 
 export default function ChordsPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const dataFetchedRef = useRef(false)
+  const [showGlobalTranspose, setShowGlobalTranspose] = useState(false)
 
   const {
     workspace,
     uniqueId,
     loading,
     showUltimateInput,
+    showTemplates,
+    showPracticeMode,
     setWorkspace,
     setUniqueId,
     setLoading,
     setShowUltimateInput,
+    setShowTemplates,
+    setShowPracticeMode,
     addBuilder,
     reorderBuilders,
     reset,
   } = useWorkspaceStore()
 
-  const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: { distance: 10 },
-    }),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    })
-  )
+  const sensors = useDndSensors({ activationDistance: 10 })
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event
@@ -196,11 +189,42 @@ export default function ChordsPage() {
             <Button
               variant="ghost"
               size="sm"
+              onClick={() => setShowTemplates(true)}
+            >
+              <BookOpen className="h-4 w-4 mr-2" />
+              Templates
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
               onClick={() => setShowUltimateInput(true)}
             >
               <Download className="h-4 w-4 mr-2" />
               Import
             </Button>
+            <Separator orientation="vertical" className="h-6" />
+            {workspace.length > 0 && (
+              <>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowGlobalTranspose(true)}
+                >
+                  <ArrowUpDown className="h-4 w-4 mr-2" />
+                  Transpose
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowPracticeMode(true)}
+                >
+                  <Play className="h-4 w-4 mr-2" />
+                  Practice
+                </Button>
+                <KeyDisplay />
+              </>
+            )}
+            <Separator orientation="vertical" className="h-6" />
             <Button variant="ghost" size="sm" onClick={handleReload}>
               <RefreshCw className="h-4 w-4 mr-2" />
               Reload
@@ -282,6 +306,17 @@ export default function ChordsPage() {
       {/* Ultimate Guitar Import Modal */}
       {showUltimateInput && (
         <UltimateInputModal loadFromUltimateGuitar={loadFromUltimateGuitar} />
+      )}
+
+      {/* Templates Modal */}
+      {showTemplates && <TemplatesModal />}
+
+      {/* Practice Mode */}
+      {showPracticeMode && <PracticeMode />}
+
+      {/* Global Transpose Modal */}
+      {showGlobalTranspose && (
+        <TransposeModal onClose={() => setShowGlobalTranspose(false)} />
       )}
     </div>
   )

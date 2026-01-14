@@ -1,21 +1,9 @@
 'use client'
 
-import type {
-  DragEndEvent} from '@dnd-kit/core';
-import {
-  closestCenter,
-  DndContext,
-  KeyboardSensor,
-  PointerSensor,
-  useSensor,
-  useSensors,
-} from '@dnd-kit/core'
-import {
-  horizontalListSortingStrategy,
-  SortableContext,
-  sortableKeyboardCoordinates,
-} from '@dnd-kit/sortable'
-import { GripVertical, Music2, Pencil, Plus, Trash2 } from 'lucide-react'
+import type { DragEndEvent } from '@dnd-kit/core'
+import { closestCenter, DndContext } from '@dnd-kit/core'
+import { horizontalListSortingStrategy, SortableContext } from '@dnd-kit/sortable'
+import { ArrowUpDown, GripVertical, Music2, Palette, Pencil, Plus, Trash2 } from 'lucide-react'
 import { useRef, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
@@ -26,9 +14,11 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
+import { useDndSensors } from '@/hooks/use-dnd-sensors'
 import { useWorkspaceStore } from '@/store/workspace-store'
 import ChordBuilder from './chord-builder'
 import SortableChordCard from './sortable-chord-card'
+import TransposeModal from './transpose-modal'
 
 interface ChordsWorkshopProps {
   id: string
@@ -42,7 +32,9 @@ export default function ChordsWorkshop({
   isDragging,
 }: ChordsWorkshopProps) {
   const [showChordBuilder, setShowChordBuilder] = useState(false)
+  const [showTranspose, setShowTranspose] = useState(false)
   const [isEditingName, setIsEditingName] = useState(false)
+  const [colorByFunction, setColorByFunction] = useState(false)
   const nameInputRef = useRef<HTMLInputElement>(null)
 
   const workspace = useWorkspaceStore((state) => state.workspace)
@@ -54,14 +46,7 @@ export default function ChordsWorkshop({
   const chords = builder?.element.chords ?? []
   const builderName = builder?.element.name
 
-  const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: { distance: 5 },
-    }),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    })
-  )
+  const sensors = useDndSensors({ activationDistance: 5 })
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event
@@ -140,21 +125,57 @@ export default function ChordsWorkshop({
             </div>
           </div>
 
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={handleDelete}
-                className="opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-destructive"
-              >
-                <Trash2 className="h-4 w-4" />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Delete builder</p>
-            </TooltipContent>
-          </Tooltip>
+          <div className="flex items-center gap-1">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setColorByFunction(!colorByFunction)}
+                  className={`opacity-0 group-hover:opacity-100 transition-opacity ${
+                    colorByFunction ? 'text-violet-400' : 'text-muted-foreground'
+                  }`}
+                >
+                  <Palette className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>{colorByFunction ? 'Default colors' : 'Color by function'}</p>
+              </TooltipContent>
+            </Tooltip>
+
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setShowTranspose(true)}
+                  className="opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-white"
+                >
+                  <ArrowUpDown className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Transpose</p>
+              </TooltipContent>
+            </Tooltip>
+
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={handleDelete}
+                  className="opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-destructive"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Delete builder</p>
+              </TooltipContent>
+            </Tooltip>
+          </div>
         </CardHeader>
 
         <CardContent>
@@ -173,6 +194,7 @@ export default function ChordsWorkshop({
                     key={chord.id}
                     builderId={id}
                     chord={chord}
+                    colorByFunction={colorByFunction}
                   />
                 ))}
 
@@ -202,6 +224,14 @@ export default function ChordsWorkshop({
           <ChordBuilder
             builderId={id}
             onClose={() => setShowChordBuilder(false)}
+          />
+        )}
+
+        {/* Transpose Modal */}
+        {showTranspose && (
+          <TransposeModal
+            builderId={id}
+            onClose={() => setShowTranspose(false)}
           />
         )}
       </Card>

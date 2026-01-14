@@ -16,6 +16,7 @@
 | Styling | Tailwind CSS + shadcn/ui | 3.x |
 | State | Zustand | 5.x |
 | Drag & Drop | @dnd-kit | 6.x / 10.x |
+| Audio | Tone.js | 15.x |
 | Database | Firebase Firestore | 11.x |
 | Testing | Bun Test Runner | built-in |
 | Linting | ESLint (flat config) | 9.x |
@@ -84,15 +85,24 @@ import { useWorkspaceStore } from '@/store'
 
 | File | Purpose |
 |------|---------|
-| `src/store/workspace-store.ts` | Zustand store for workspace state |
+| `src/store/workspace-store.ts` | Zustand store for workspace state, transpose, and templates |
 | `src/types/chord.ts` | Chord-related types and constants |
 | `src/types/workspace.ts` | Workspace structure types (includes optional `name` field for builders) |
 | `src/services/ultimate-guitar-service.ts` | UG scraping logic |
 | `src/services/firebase-service.ts` | Firebase singleton service |
+| `src/services/audio-service.ts` | Tone.js audio playback singleton |
 | `src/features/generate-chord-info.ts` | Chord note/label generation |
 | `src/features/construct-workspace.ts` | Converts UG chords to workspace |
+| `src/features/music-theory.ts` | Key detection, Roman numerals, transposition, templates |
+| `src/hooks/use-audio.ts` | Custom hook for audio playback with Tone.js |
+| `src/hooks/use-dnd-sensors.ts` | Custom hook for DnD sensor configuration |
 | `src/components/sortable-builder.tsx` | Wrapper for drag-and-drop reordering of builders |
-| `src/components/sortable-chord-card.tsx` | Chord card with drag-and-drop support |
+| `src/components/sortable-chord-card.tsx` | Chord card with DnD, audio, Roman numerals |
+| `src/components/practice-mode.tsx` | Practice mode with tempo and playback |
+| `src/components/templates-modal.tsx` | Progression template selector |
+| `src/components/transpose-modal.tsx` | Transpose controls (per-builder or global) |
+| `src/components/key-display.tsx` | Detected key display with confidence |
+| `src/components/guitar-chord-diagram.tsx` | SVG guitar chord diagrams |
 
 ## Common Tasks
 
@@ -173,6 +183,21 @@ When working on this codebase, AI agents should:
 
 7. **State in Zustand** - All global state should go through the workspace store
 
+## Custom Hooks
+
+The app uses custom hooks to reduce code duplication:
+
+### `useAudio` (`src/hooks/use-audio.ts`)
+Provides audio playback functionality using Tone.js:
+- `playChord(chord)` - Play a single chord
+- `playProgression(chords, beatsPerChord, onChordChange)` - Play a progression
+- `stop()` - Stop playback
+- `setBpm(bpm)` - Set tempo
+
+### `useDndSensors` (`src/hooks/use-dnd-sensors.ts`)
+Provides consistent DnD sensor configuration:
+- `useDndSensors({ activationDistance: 5 })` - Returns configured sensors
+
 ## Drag & Drop
 
 The app uses `@dnd-kit` for drag-and-drop functionality:
@@ -181,6 +206,7 @@ The app uses `@dnd-kit` for drag-and-drop functionality:
 - **Chord reordering**: Drag chords horizontally within a builder to reorder (via grip handle)
 - **Store actions**: `reorderBuilders(activeId, overId)` and `reorderChords(builderId, activeId, overId)`
 - Uses `arrayMove` from `@dnd-kit/sortable` for immutable reordering
+- Uses `useDndSensors` hook for consistent sensor configuration
 
 ### Builder Naming
 Builders have an optional `name` field. Click on "Chord Progression" header to edit inline.
@@ -206,4 +232,4 @@ Run `bun lint:fix` to auto-fix most issues.
 ---
 
 *Last updated by AI agent: January 2026*
-*Update reason: Updated ESLint to flat config with modern plugins, added no-floating-promises and no-trailing-spaces rules*
+*Update reason: Added music theory features (key detection, Roman numerals, chord functions), audio playback with Tone.js, practice mode, progression templates, transposition, and guitar chord diagrams*

@@ -1,5 +1,7 @@
 import { arrayMove } from '@dnd-kit/sortable'
 import { create } from 'zustand'
+import type { ProgressionTemplate } from '@/features/music-theory'
+import { transposeChord } from '@/features/music-theory'
 import type { Chord } from '@/types/chord'
 import type { WorkspaceElement } from '@/types/workspace'
 
@@ -8,6 +10,9 @@ interface WorkspaceState {
   uniqueId: string | null
   loading: boolean
   showUltimateInput: boolean
+  showTemplates: boolean
+  showPracticeMode: boolean
+  detectedKey: { root: string; mode: 'major' | 'minor' } | null
 }
 
 interface WorkspaceActions {
@@ -15,6 +20,9 @@ interface WorkspaceActions {
   setUniqueId: (id: string | null) => void
   setLoading: (loading: boolean) => void
   setShowUltimateInput: (show: boolean) => void
+  setShowTemplates: (show: boolean) => void
+  setShowPracticeMode: (show: boolean) => void
+  setDetectedKey: (key: { root: string; mode: 'major' | 'minor' } | null) => void
   addBuilder: () => void
   removeBuilder: (id: string) => void
   updateBuilderName: (builderId: string, name: string) => void
@@ -23,6 +31,9 @@ interface WorkspaceActions {
   removeChord: (builderId: string, chordId: string) => void
   reorderChords: (builderId: string, activeId: string, overId: string) => void
   updateBuilderChords: (builderId: string, chords: Chord[]) => void
+  transposeBuilder: (builderId: string, semitones: number) => void
+  transposeAll: (semitones: number) => void
+  loadTemplate: (template: ProgressionTemplate) => void
   reset: () => void
 }
 
@@ -33,6 +44,9 @@ const initialState: WorkspaceState = {
   uniqueId: null,
   loading: true,
   showUltimateInput: false,
+  showTemplates: false,
+  showPracticeMode: false,
+  detectedKey: null,
 }
 
 export const useWorkspaceStore = create<WorkspaceStore>((set, _get) => ({
@@ -45,6 +59,12 @@ export const useWorkspaceStore = create<WorkspaceStore>((set, _get) => ({
   setLoading: (loading) => set({ loading }),
 
   setShowUltimateInput: (show) => set({ showUltimateInput: show }),
+
+  setShowTemplates: (show) => set({ showTemplates: show }),
+
+  setShowPracticeMode: (show) => set({ showPracticeMode: show }),
+
+  setDetectedKey: (key) => set({ detectedKey: key }),
 
   addBuilder: () => {
     const id = crypto.randomUUID()
@@ -147,6 +167,53 @@ export const useWorkspaceStore = create<WorkspaceStore>((set, _get) => ({
             }
           : ws
       ),
+    }))
+  },
+
+  transposeBuilder: (builderId, semitones) => {
+    set((state) => ({
+      workspace: state.workspace.map((ws) =>
+        ws.id === builderId
+          ? {
+              ...ws,
+              element: {
+                ...ws.element,
+                chords: ws.element.chords.map((chord) =>
+                  transposeChord(chord, semitones)
+                ),
+              },
+            }
+          : ws
+      ),
+    }))
+  },
+
+  transposeAll: (semitones) => {
+    set((state) => ({
+      workspace: state.workspace.map((ws) => ({
+        ...ws,
+        element: {
+          ...ws.element,
+          chords: ws.element.chords.map((chord) =>
+            transposeChord(chord, semitones)
+          ),
+        },
+      })),
+    }))
+  },
+
+  loadTemplate: (template) => {
+    const id = crypto.randomUUID()
+    const chords = template.chords.map((c) => ({
+      ...c,
+      id: crypto.randomUUID(),
+    }))
+    const newElement: WorkspaceElement = {
+      id,
+      element: { id, chords, name: template.name },
+    }
+    set((state) => ({
+      workspace: [...state.workspace, newElement],
     }))
   },
 
