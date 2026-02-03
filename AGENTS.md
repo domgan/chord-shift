@@ -13,7 +13,7 @@
 | Runtime | Bun | 1.x |
 | Framework | Next.js (App Router) | 16.x |
 | UI | React | 19.x |
-| Styling | Tailwind CSS + shadcn/ui | 3.x |
+| Styling | Tailwind CSS + shadcn/ui | 4.x |
 | State | Zustand | 5.x |
 | Drag & Drop | @dnd-kit | 6.x / 10.x |
 | Audio | Tone.js | 15.x |
@@ -132,10 +132,14 @@ The scraping service may get blocked by Cloudflare. The service includes browser
 - Using a headless browser for critical scraping
 - Implementing a fallback manual input
 
-### Turbopack CSS Issues
-If CSS processing fails during build, ensure:
-- No `@apply` directives with non-utility classes (e.g., `@apply dark`)
-- Valid CSS syntax in `globals.css`
+### Tailwind CSS v4 Setup
+Tailwind v4 uses a CSS-first configuration. Ensure:
+- `postcss.config.js` uses `@tailwindcss/postcss`
+- `globals.css` starts with `@import "tailwindcss";`
+- Theme tokens live in `@theme` (no JS config for runtime)
+- Custom utilities use `@utility`
+- Class-based dark mode uses `@custom-variant dark`
+- `tailwind.config.js` is kept minimal for tooling only (shadcn CLI)
 
 ## Environment Variables
 
@@ -232,4 +236,4 @@ Run `bun lint:fix` to auto-fix most issues.
 ---
 
 *Last updated by AI agent: January 2026*
-*Update reason: Added music theory features (key detection, Roman numerals, chord functions), audio playback with Tone.js, practice mode, progression templates, transposition, and guitar chord diagrams*
+*Update reason: Migrated Tailwind v4 to CSS-first config (@theme/@utility), updated PostCSS plugin, removed Next Themes usage*

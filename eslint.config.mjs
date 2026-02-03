@@ -1,25 +1,16 @@
-import { FlatCompat } from '@eslint/eslintrc'
 import tseslint from '@typescript-eslint/eslint-plugin'
 import tsParser from '@typescript-eslint/parser'
+import nextConfig from 'eslint-config-next'
 import importPlugin from 'eslint-plugin-import-x'
-import react from 'eslint-plugin-react'
-import reactHooks from 'eslint-plugin-react-hooks'
 import { dirname } from 'path'
 import { fileURLToPath } from 'url'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-})
-
 /** @type {import('eslint').Linter.Config[]} */
 const eslintConfig = [
-  // Next.js core web vitals (uses compat layer)
-  ...compat.extends('next/core-web-vitals'),
-
-  // TypeScript + React + Hooks
+  ...nextConfig,
   {
     files: ['**/*.{ts,tsx}'],
     languageOptions: {
@@ -30,20 +21,15 @@ const eslintConfig = [
         ecmaFeatures: {
           jsx: true,
         },
-        projectService: true,
+        project: ['./tsconfig.json'],
         tsconfigRootDir: __dirname,
       },
     },
     plugins: {
       '@typescript-eslint': tseslint,
-      'react': react,
-      'react-hooks': reactHooks,
       'import-x': importPlugin,
     },
     settings: {
-      react: {
-        version: 'detect',
-      },
       'import-x/resolver': {
         typescript: {
           alwaysTryTypes: true,
@@ -58,17 +44,6 @@ const eslintConfig = [
       '@typescript-eslint/no-floating-promises': 'error',
       '@typescript-eslint/await-thenable': 'error',
       '@typescript-eslint/no-misused-promises': ['error', { checksVoidReturn: false }],
-
-      // React
-      'react/react-in-jsx-scope': 'off',
-      'react/prop-types': 'off',
-      'react/jsx-no-target-blank': 'error',
-      'react/jsx-curly-brace-presence': ['warn', { props: 'never', children: 'never' }],
-      'react/self-closing-comp': 'warn',
-
-      // React Hooks
-      'react-hooks/rules-of-hooks': 'error',
-      'react-hooks/exhaustive-deps': 'warn',
 
       // Import organization
       'import-x/order': [
@@ -98,8 +73,6 @@ const eslintConfig = [
       'arrow-body-style': ['warn', 'as-needed'],
     },
   },
-
-  // Ignore patterns
   {
     ignores: [
       '.next/**',

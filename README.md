@@ -9,7 +9,7 @@ A modern web application for scraping chords from Ultimate Guitar, transposing t
 | Runtime | [Bun](https://bun.sh) | 1.x |
 | Framework | [Next.js](https://nextjs.org) (App Router) | 16.x |
 | UI | [React](https://react.dev) | 19.x |
-| Styling | [Tailwind CSS](https://tailwindcss.com) + [shadcn/ui](https://ui.shadcn.com) | 3.x |
+| Styling | [Tailwind CSS](https://tailwindcss.com) + [shadcn/ui](https://ui.shadcn.com) | 4.x |
 | State | [Zustand](https://zustand.docs.pmnd.rs) | 5.x |
 | Drag & Drop | [@dnd-kit](https://dndkit.com) | 6.x / 10.x |
 | Audio | [Tone.js](https://tonejs.github.io) | 15.x |
@@ -125,6 +125,13 @@ flowchart LR
 - **Inline Editing** - Click to rename builders
 
 ## Getting Started
+### Tailwind v4 Notes
+
+Tailwind v4 is configured using CSS-first syntax in `src/styles/globals.css`:
+- `@import "tailwindcss";`
+- `@theme` for design tokens
+- `@utility` for custom utilities
+- `@custom-variant dark` for class-based dark mode
 
 ### Prerequisites
 
