@@ -1,4 +1,4 @@
-import { JSDOM } from 'jsdom'
+import { load } from 'cheerio'
 
 const BROWSER_HEADERS = {
   'User-Agent':
@@ -55,15 +55,14 @@ export function parseChords(contentRaw: string): string[][] {
 
 export async function extractChords(url: string): Promise<string[][]> {
   const html = await fetchPage(url)
-  const dom = new JSDOM(html)
-  const document = dom.window.document
+  const $ = load(html)
+  const storeDiv = $('.js-store').first()
 
-  const storeDiv = document.querySelector('.js-store')
-  if (!storeDiv) {
+  if (storeDiv.length === 0) {
     throw new Error('Could not find chord data on page - site structure may have changed')
   }
 
-  const dataContent = storeDiv.getAttribute('data-content')
+  const dataContent = storeDiv.attr('data-content')
   if (!dataContent) {
     throw new Error('No data-content attribute found')
   }

@@ -1,4 +1,3 @@
-import tseslint from '@typescript-eslint/eslint-plugin'
 import tsParser from '@typescript-eslint/parser'
 import nextConfig from 'eslint-config-next'
 import importPlugin from 'eslint-plugin-import-x'
@@ -26,7 +25,7 @@ const eslintConfig = [
       },
     },
     plugins: {
-      '@typescript-eslint': tseslint,
+      // @typescript-eslint is already registered by eslint-config-next
       'import-x': importPlugin,
     },
     settings: {

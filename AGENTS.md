@@ -18,6 +18,7 @@
 | Drag & Drop | @dnd-kit | 6.x / 10.x |
 | Audio | Tone.js | 15.x |
 | Database | Firebase Firestore | 11.x |
+| HTML parsing (UG API) | Cheerio | 1.x |
 | Testing | Bun Test Runner | built-in |
 | Linting | ESLint (flat config) | 9.x |
 | Lint Plugins | typescript-eslint, import-x, react, react-hooks | 8.x / 4.x / 7.x |
@@ -88,7 +89,7 @@ import { useWorkspaceStore } from '@/store'
 | `src/store/workspace-store.ts` | Zustand store for workspace state, transpose, and templates |
 | `src/types/chord.ts` | Chord-related types and constants |
 | `src/types/workspace.ts` | Workspace structure types (includes optional `name` field for builders) |
-| `src/services/ultimate-guitar-service.ts` | UG scraping logic |
+| `src/services/ultimate-guitar-service.ts` | UG fetch + Cheerio HTML parse + chord extraction |
 | `src/services/firebase-service.ts` | Firebase singleton service |
 | `src/services/audio-service.ts` | Tone.js audio playback singleton |
 | `src/features/generate-chord-info.ts` | Chord note/label generation |
@@ -235,5 +236,5 @@ Run `bun lint:fix` to auto-fix most issues.
 
 ---
 
-*Last updated by AI agent: January 2026*
-*Update reason: Migrated Tailwind v4 to CSS-first config (@theme/@utility), updated PostCSS plugin, removed Next Themes usage*
+*Last updated by AI agent: May 2026*
+*Update reason: Cheerio for UG HTML parsing (Next/Turbopack bundle-safe); tsconfig `types: ["bun"]` for test files; AGENTS tech stack row*
